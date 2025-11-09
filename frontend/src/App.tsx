@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { CurrencyProvider } from './contexts/CurrencyContext';
+import { ReferenceDataProvider } from './contexts/ReferenceDataContext';
 import { ToastProvider } from './components/ui/Toast';
 import { CookieConsent } from './pages/CookieConsent';
 
@@ -24,12 +25,14 @@ function App() {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <AuthProvider>
-          <CurrencyProvider>
-            <Outlet />
-            <CookieConsent />
-          </CurrencyProvider>
-        </AuthProvider>
+        <ReferenceDataProvider>
+          <AuthProvider>
+            <CurrencyProvider>
+              <Outlet />
+              <CookieConsent />
+            </CurrencyProvider>
+          </AuthProvider>
+        </ReferenceDataProvider>
       </ToastProvider>
     </ThemeProvider>
   );

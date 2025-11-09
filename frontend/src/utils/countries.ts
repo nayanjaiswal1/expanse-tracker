@@ -1,3 +1,11 @@
+/**
+ * @deprecated This file contains hardcoded country data.
+ * Please use the useCountries() hook from contexts/ReferenceDataContext.tsx instead
+ * to get country data from the backend.
+ *
+ * This file is kept for backward compatibility only.
+ */
+
 export interface Country {
   code: string;
   name: string;
@@ -5,6 +13,9 @@ export interface Country {
   dialCode: string;
 }
 
+/**
+ * @deprecated Use useCountries() hook from ReferenceDataContext instead
+ */
 export const COUNTRIES: Country[] = [
   { code: 'US', name: 'United States', flag: '🇺🇸', dialCode: '+1' },
   { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', dialCode: '+44' },
