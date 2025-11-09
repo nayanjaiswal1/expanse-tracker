@@ -36,6 +36,8 @@ import TelegramIntegration from './features/settings/TelegramIntegration';
 import PlanCustomization from './pages/PlanCustomization';
 import { DocumentParserPage } from './pages/DocumentParserPage';
 import RecurringInvestments from './features/finance/RecurringInvestments';
+import { ChatPage } from './pages/ChatPage';
+import { StatementPasswordsPage } from './pages/StatementPasswordsPage';
 
 // Layout
 import { Layout } from './components/layout';
@@ -69,6 +71,7 @@ const router = createBrowserRouter([
             element: <Layout />,
             children: [
               { path: 'dashboard', element: withErrorBoundary(Dashboard) },
+              { path: 'chat', element: withErrorBoundary(ChatPage) },
               { path: 'transactions', element: withErrorBoundary(ConfigurableTransactionTable) },
               { path: 'accounts', element: withErrorBoundary(AccountsManagement) },
               { path: 'subscriptions', element: <Navigate to="/settings" replace /> },
@@ -81,6 +84,7 @@ const router = createBrowserRouter([
               { path: 'gmail-callback', element: withErrorBoundary(GmailCallback) },
               { path: 'analytics', element: <Navigate to="/dashboard" replace /> },
               { path: 'settings/*', element: withErrorBoundary(Settings) },
+              { path: 'settings/passwords', element: withErrorBoundary(StatementPasswordsPage) },
               { path: 'upload-history', element: withErrorBoundary(BankStatementUploadWrapper) },
               { path: 'uploads', element: withErrorBoundary(BankStatementUploadWrapper) },
               { path: 'profile', element: <Navigate to="/settings" replace /> },
