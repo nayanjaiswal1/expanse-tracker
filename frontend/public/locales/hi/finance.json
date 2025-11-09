@@ -1,0 +1,104 @@
+{
+  "finance": {
+    "budgets": {
+      "modals": {
+        "category": {
+          "addTitle": "श्रेणी जोड़ें",
+          "editTitle": "श्रेणी संपादित करें",
+          "fields": {
+            "categoryLabel": "श्रेणी",
+            "categoryPlaceholder": "एक श्रेणी चुनें",
+            "allocatedLabel": "आवंटित राशि",
+            "allocatedPlaceholder": "0.00",
+            "thresholdLabel": "अलर्ट सीमा (%)",
+            "thresholdPlaceholder": "80",
+            "notesLabel": "नोट्स (वैकल्पिक)",
+            "notesPlaceholder": "अतिरिक्त नोट्स",
+            "essentialLabel": "आवश्यक श्रेणी"
+          },
+          "submitCreate": "श्रेणी जोड़ें",
+          "submitUpdate": "श्रेणी अपडेट करें"
+        },
+        "editBudget": {
+          "title": "बजट संपादित करें"
+        },
+        "expense": {
+          "title": "खर्च जोड़ें - {{category}}",
+          "titleFallback": "खर्च जोड़ें",
+          "fields": {
+            "descriptionLabel": "विवरण",
+            "descriptionPlaceholder": "आपने किस पर खर्च किया?",
+            "amountLabel": "राशि",
+            "amountPlaceholder": "0.00",
+            "accountLabel": "खाता (वैकल्पिक)",
+            "accountPlaceholder": "खाता चुनें (वैकल्पिक)",
+            "dateLabel": "तारीख"
+          },
+          "submit": "खर्च जोड़ें"
+        },
+        "deleteCategory": {
+          "title": "श्रेणी हटाएँ",
+          "message": "क्या आप \"{{name}}\" हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।"
+        },
+        "deleteBudget": {
+          "title": "बजट हटाएँ",
+          "message": "क्या आप \"{{name}}\" हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।"
+        }
+      }
+    },
+    "accounts": {
+      "modals": {
+        "accountForm": {
+          "addTitle": "नया खाता जोड़ें",
+          "addSubtitle": "खाते को जोड़ें ताकि बैलेंस ट्रैक किया जा सके।",
+          "editTitle": "खाता संपादित करें",
+          "editSubtitle": "खाते के विवरण और प्राथमिकताएँ अपडेट करें।"
+        },
+        "delete": {
+          "title": "खाता हटाएँ",
+          "message": "क्या आप वाकई \"{{name}}\" खाते को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।"
+        }
+      },
+      "notifications": {
+        "deleteFailed": {
+          "title": "हटाना विफल",
+          "message": "खाता हटाते समय एक त्रुटि हुई।"
+        }
+      }
+    }
+  },
+  "goals": {
+    "detail": {
+      "back": "लक्ष्यों पर वापस जाएँ",
+      "status": {
+        "active": "सक्रिय",
+        "paused": "रुका हुआ",
+        "completed": "पूर्ण",
+        "cancelled": "रद्द",
+        "unknown": "अज्ञात"
+      },
+      "actions": {
+        "updateProgress": "प्रगति अपडेट करें",
+        "pause": "रोकें",
+        "resume": "फिर से शुरू करें"
+      },
+      "progress": {
+        "label": "प्रगति",
+        "current": "वर्तमान",
+        "target": "लक्ष्य",
+        "remaining": "शेष"
+      },
+      "dates": {
+        "started": "प्रारंभ: {{date}}",
+        "target": "लक्ष्य तिथि: {{date}}"
+      },
+      "images": {
+        "title": "लक्ष्य चित्र ({{count}})",
+        "alt": "लक्ष्य चित्र",
+        "numberedAlt": "लक्ष्य चित्र {{index}}",
+        "thumbnailAlt": "लघुचित्र {{index}}",
+        "fullscreenAlt": "पूर्ण आकार का लक्ष्य चित्र"
+      }
+    }
+  }
+}

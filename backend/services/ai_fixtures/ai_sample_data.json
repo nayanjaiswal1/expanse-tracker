@@ -1,0 +1,129 @@
+[
+  {
+    "model": "users.activitylog",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "activity_type": "ai_usage",
+      "object_type": "transaction",
+      "object_id": "2",
+      "status": "completed",
+      "details": {
+        "provider": "openai",
+        "model": "gpt-3.5-turbo",
+        "credits_used": 5,
+        "operation": "categorization",
+        "confidence": 0.95
+      },
+      "metadata": {
+        "original_category": null,
+        "suggested_category": "Food & Dining",
+        "auto_applied": true
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      "created_at": "2024-01-02T00:05:00Z",
+      "updated_at": "2024-01-02T00:05:00Z"
+    }
+  },
+  {
+    "model": "users.activitylog",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "activity_type": "transaction_execution",
+      "object_type": "transaction",
+      "object_id": "5",
+      "status": "completed",
+      "details": {
+        "template_id": "5",
+        "created_transaction_id": "7",
+        "execution_date": "2024-01-10T08:00:00Z",
+        "amount": "45.00"
+      },
+      "metadata": {
+        "auto_execution": true,
+        "recurring_template": "Weekly Gas"
+      },
+      "ip_address": null,
+      "user_agent": "",
+      "created_at": "2024-01-10T08:00:00Z",
+      "updated_at": "2024-01-10T08:00:00Z"
+    }
+  },
+  {
+    "model": "users.activitylog",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "activity_type": "ai_usage",
+      "object_type": "invoice",
+      "object_id": "1",
+      "status": "completed",
+      "details": {
+        "provider": "system",
+        "model": "default",
+        "credits_used": 15,
+        "operation": "invoice_generation",
+        "processing_time": 2.5
+      },
+      "metadata": {
+        "template_used": "standard_invoice",
+        "fields_extracted": 8,
+        "validation_passed": true
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      "created_at": "2024-01-10T10:30:00Z",
+      "updated_at": "2024-01-10T10:30:00Z"
+    }
+  },
+  {
+    "model": "users.activitylog",
+    "pk": 4,
+    "fields": {
+      "user": 2,
+      "activity_type": "login",
+      "object_type": "",
+      "object_id": "",
+      "status": "completed",
+      "details": {
+        "login_method": "email",
+        "session_duration": null
+      },
+      "metadata": {
+        "device_type": "desktop",
+        "browser": "Chrome"
+      },
+      "ip_address": "192.168.1.100",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      "created_at": "2024-01-15T09:15:00Z",
+      "updated_at": "2024-01-15T09:15:00Z"
+    }
+  },
+  {
+    "model": "users.activitylog",
+    "pk": 5,
+    "fields": {
+      "user": 1,
+      "activity_type": "data_export",
+      "object_type": "transactions",
+      "object_id": "",
+      "status": "completed",
+      "details": {
+        "export_format": "csv",
+        "date_range": "2024-01-01 to 2024-01-15",
+        "records_exported": 6,
+        "file_size": "2.1KB"
+      },
+      "metadata": {
+        "categories_included": ["Food & Dining", "Transportation", "Salary"],
+        "accounts_included": ["Main Checking", "Savings Account"]
+      },
+      "ip_address": "127.0.0.1",
+      "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      "created_at": "2024-01-15T14:20:00Z",
+      "updated_at": "2024-01-15T14:20:00Z"
+    }
+  }
+]

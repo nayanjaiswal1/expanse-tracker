@@ -1,0 +1,15 @@
+{
+  "actions": {
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "gotIt": "Entendido",
+    "delete": "Eliminar",
+    "back": "Atrás",
+    "continue": "Continuar",
+    "clear_all": "Limpiar todo",
+    "remove": "Eliminar"
+  },
+  "labels": {
+    "yourLocation": "Tu ubicación"
+  }
+}

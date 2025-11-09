@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Usage Report</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>AI Usage Report for {{ user.username }}</h1>
+    <p>Report Date: {{ report_date }}</p>
+
+    <h2>Summary</h2>
+    <table>
+        <tr>
+            <th>Total Requests</th>
+            <th>Successful Requests</th>
+            <th>Success Rate</th>
+            <th>Total Credits Used</th>
+            <th>Total Tokens Used</th>
+            <th>Avg. Processing Time</th>
+        </tr>
+        <tr>
+            <td>{{ usage_data.total_requests }}</td>
+            <td>{{ usage_data.successful_requests }}</td>
+            <td>{{ usage_data.success_rate }}%</td>
+            <td>{{ usage_data.total_credits_used }}</td>
+            <td>{{ usage_data.total_tokens_used }}</td>
+            <td>{{ usage_data.avg_processing_time }}s</td>
+        </tr>
+    </table>
+
+    <h2>Usage by Provider</h2>
+    <table>
+        <tr>
+            <th>Provider</th>
+            <th>Requests</th>
+            <th>Credits</th>
+            <th>Success Rate</th>
+        </tr>
+        {% for provider, stats in usage_data.provider_stats.items %}
+        <tr>
+            <td>{{ provider }}</td>
+            <td>{{ stats.requests }}</td>
+            <td>{{ stats.credits }}</td>
+            <td>{{ stats.success_rate }}%</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Usage by Operation Type</h2>
+    <table>
+        <tr>
+            <th>Operation</th>
+            <th>Requests</th>
+            <th>Credits</th>
+        </tr>
+        {% for operation, stats in usage_data.operation_stats.items %}
+        <tr>
+            <td>{{ operation }}</td>
+            <td>{{ stats.requests }}</td>
+            <td>{{ stats.credits }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Daily Usage Trend</h2>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Requests</th>
+            <th>Credits</th>
+        </tr>
+        {% for daily in usage_data.daily_usage %}
+        <tr>
+            <td>{{ daily.date }}</td>
+            <td>{{ daily.requests }}</td>
+            <td>{{ daily.credits }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

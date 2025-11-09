@@ -1,0 +1,59 @@
+{
+  "telegram": {
+    "notifications": {
+      "botCreated": "Bot de Telegram creado correctamente",
+      "createBotError": "No se pudo crear el bot",
+      "botAction": "Bot {{action}} ejecutado",
+      "botActionError": "No se pudo {{action}} el bot",
+      "userActionSuccess": "Acción realizada con éxito",
+      "userActionError": "No se pudo {{action}} al usuario"
+    },
+    "modals": {
+      "addBot": {
+        "title": "Agregar bot de Telegram",
+        "form": {
+          "nameLabel": "Nombre del bot",
+          "namePlaceholder": "Mi bot financiero",
+          "tokenLabel": "Token del bot",
+          "tokenPlaceholder": "123456789:ABCdefGHIjklMNOpqrsTUVwxyz",
+          "webhookLabel": "URL del webhook",
+          "webhookPlaceholder": "https://tu-dominio.com/api/telegram/webhook/",
+          "submit": "Crear bot"
+        }
+      },
+      "setupGuide": {
+        "title": "Guía de configuración del bot de Telegram",
+        "stepHeading": "Paso {{step}}: {{title}}",
+        "availableCommands": "Comandos disponibles",
+        "introHeading": "Configurar tu bot de Telegram",
+        "stepsList": [
+          "Abre Telegram y busca <code>@BotFather</code>",
+          "Envía <code>/newbot</code> para crear un nuevo bot",
+          "Sigue las instrucciones para nombrar tu bot",
+          "Copia el token del bot proporcionado por BotFather",
+          "Pega el token en el formulario superior",
+          "Los usuarios podrán encontrar tu bot y comenzar conversaciones"
+        ],
+        "featuresHeading": "Funciones del bot",
+        "featuresList": [
+          "Recibir notificaciones de transacciones",
+          "Agregar transacciones mediante el chat",
+          "Consultar saldos de cuentas",
+          "Obtener resúmenes de gastos"
+        ]
+      },
+      "editBot": {
+        "title": "Editar bot"
+      },
+      "botStats": {
+        "title": "Estadísticas de {{name}}",
+        "metrics": {
+          "totalUsers": "Usuarios totales",
+          "activeUsers": "Usuarios activos",
+          "totalMessages": "Mensajes totales",
+          "transactionsCreated": "Transacciones creadas"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "modals": {
+    "defaultSubtitle": "Crea una nueva cuenta para gestionar tus finanzas",
+    "closeAria": "Cerrar modal",
+    "unsavedChanges": {
+      "title": "Cambios sin guardar",
+      "message": "Tienes cambios sin guardar. ¿Seguro que quieres cerrar sin guardar?",
+      "confirm": "Cerrar sin guardar",
+      "cancel": "Seguir editando"
+    }
+  }
+}

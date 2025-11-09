@@ -1,0 +1,196 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "testuser1",
+      "email": "testuser1@example.com",
+      "first_name": "John",
+      "last_name": "Doe",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2024-01-01T00:00:00Z",
+      "password": "pbkdf2_sha256$260000$test123$abcdef123456"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "username": "testuser2",
+      "email": "testuser2@example.com",
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "is_active": true,
+      "is_staff": false,
+      "is_superuser": false,
+      "date_joined": "2024-01-02T00:00:00Z",
+      "password": "pbkdf2_sha256$260000$test123$abcdef123456"
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 3,
+    "fields": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "first_name": "Admin",
+      "last_name": "User",
+      "is_active": true,
+      "is_staff": true,
+      "is_superuser": true,
+      "date_joined": "2024-01-01T00:00:00Z",
+      "password": "pbkdf2_sha256$260000$admin123$abcdef123456"
+    }
+  },
+  {
+    "model": "users.plan",
+    "pk": 1,
+    "fields": {
+      "name": "Free Trial",
+      "plan_type": "base",
+      "description": "Free trial plan with basic features",
+      "price": "0.00",
+      "billing_cycle": "monthly",
+      "ai_credits_per_month": 100,
+      "max_transactions_per_month": 1000,
+      "max_accounts": 3,
+      "storage_gb": "1.00",
+      "features": {
+        "ai_categorization": true,
+        "basic_reports": true,
+        "export_data": false
+      },
+      "is_active": true,
+      "is_featured": false,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "users.plan",
+    "pk": 2,
+    "fields": {
+      "name": "Premium",
+      "plan_type": "base",
+      "description": "Premium plan with advanced features",
+      "price": "19.99",
+      "billing_cycle": "monthly",
+      "ai_credits_per_month": 1000,
+      "max_transactions_per_month": 10000,
+      "max_accounts": 10,
+      "storage_gb": "10.00",
+      "features": {
+        "ai_categorization": true,
+        "basic_reports": true,
+        "advanced_reports": true,
+        "export_data": true,
+        "investment_tracking": true
+      },
+      "is_active": true,
+      "is_featured": true,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "users.plan",
+    "pk": 3,
+    "fields": {
+      "name": "Extra AI Credits",
+      "plan_type": "addon",
+      "description": "Additional AI credits per month",
+      "price": "5.99",
+      "billing_cycle": "monthly",
+      "ai_credits_per_month": 500,
+      "max_transactions_per_month": 0,
+      "max_accounts": 0,
+      "storage_gb": "0.00",
+      "features": {},
+      "is_stackable": true,
+      "max_quantity": 5,
+      "is_active": true,
+      "is_featured": false,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "users.userprofile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "current_plan": 1,
+      "subscription_status": "trial",
+      "subscription_start_date": "2024-01-01T00:00:00Z",
+      "subscription_end_date": "2024-02-01T00:00:00Z",
+      "is_auto_renew": true,
+      "ai_credits_remaining": 100,
+      "ai_credits_used_this_month": 0,
+      "transactions_this_month": 0,
+      "last_reset_date": "2024-01-01",
+      "preferred_ai_provider": "system",
+      "openai_api_key": "",
+      "openai_model": "gpt-3.5-turbo",
+      "ollama_endpoint": "http://localhost:11434",
+      "ollama_model": "llama2",
+      "enable_ai_suggestions": true,
+      "enable_ai_categorization": true,
+      "enable_ai_invoice_generation": true,
+      "total_ai_credits": 100,
+      "total_transactions_limit": 1000,
+      "total_accounts_limit": 3,
+      "total_storage_gb": "1.00",
+      "custom_features": {},
+      "total_monthly_cost": "0.00",
+      "default_currency": "USD",
+      "timezone": "UTC",
+      "language": "en",
+      "onboarding_step": 5,
+      "is_onboarded": true,
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "users.userprofile",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "current_plan": 2,
+      "subscription_status": "active",
+      "subscription_start_date": "2024-01-02T00:00:00Z",
+      "subscription_end_date": "2024-02-02T00:00:00Z",
+      "is_auto_renew": true,
+      "ai_credits_remaining": 1000,
+      "ai_credits_used_this_month": 25,
+      "transactions_this_month": 150,
+      "last_reset_date": "2024-01-01",
+      "preferred_ai_provider": "openai",
+      "openai_api_key": "",
+      "openai_model": "gpt-4",
+      "ollama_endpoint": "http://localhost:11434",
+      "ollama_model": "llama2",
+      "enable_ai_suggestions": true,
+      "enable_ai_categorization": true,
+      "enable_ai_invoice_generation": true,
+      "total_ai_credits": 1000,
+      "total_transactions_limit": 10000,
+      "total_accounts_limit": 10,
+      "total_storage_gb": "10.00",
+      "custom_features": {
+        "advanced_reports": true,
+        "export_data": true
+      },
+      "total_monthly_cost": "19.99",
+      "default_currency": "USD",
+      "timezone": "America/New_York",
+      "language": "en",
+      "onboarding_step": 5,
+      "is_onboarded": true,
+      "created_at": "2024-01-02T00:00:00Z",
+      "updated_at": "2024-01-15T00:00:00Z"
+    }
+  }
+]

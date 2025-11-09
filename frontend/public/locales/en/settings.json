@@ -1,0 +1,330 @@
+{
+  "profile": {
+    "title": "Profile & Appearance",
+    "description": "Manage your personal information, profile picture, and security settings",
+    "form": {
+      "title": "Profile Settings",
+      "description": "Update your profile information",
+      "fields": {
+        "fullName": "Full name",
+        "fullNamePlaceholder": "e.g. Alex Johnson",
+        "fullNameDescription": "Your full name as it will appear on your profile",
+        "email": "Email",
+        "emailPlaceholder": "your.email@example.com",
+        "emailDescription": "Your primary email address for notifications",
+        "phoneCountryCode": "Country Code",
+        "phoneCountryCodeDescription": "Select your country calling code",
+        "phone": "Phone number",
+        "phonePlaceholder": "555 123 4567",
+        "phoneDescription": "Optional: Your contact phone number",
+        "currency": "Currency",
+        "currencyDescription": "Your preferred currency for displaying amounts",
+        "timezone": "Timezone",
+        "timezoneDescription": "Your local timezone for date and time display",
+        "bio": "Bio",
+        "bioPlaceholder": "Tell us about yourself...",
+        "bioDescription": "A short description about you (max 500 characters)",
+        "website": "Website",
+        "websitePlaceholder": "https://yourwebsite.com",
+        "websiteDescription": "Your personal or professional website",
+        "location": "Location",
+        "locationPlaceholder": "e.g., San Francisco, CA",
+        "locationDescription": "Your city or region"
+      },
+      "submitButton": "Save Changes",
+      "submit": "Save Changes"
+    },
+    "sections": {
+      "picture": {
+        "title": "Profile Picture",
+        "description": "Upload and customize your profile photo with built-in cropping tools"
+      },
+      "personalInfo": {
+        "title": "Personal Information",
+        "description": "Update your personal details and contact information"
+      },
+      "security": {
+        "title": "Security Settings",
+        "description": "Manage your password and account security",
+        "password": {
+          "title": "Password",
+          "description": "Keep your account secure with a strong password",
+          "changeButton": "Change Password",
+          "cancelButton": "Cancel"
+        },
+        "twoFactor": {
+          "title": "Two-Factor Authentication",
+          "description": "Add an extra layer of security to your account",
+          "comingSoon": "Coming Soon"
+        }
+      }
+    }
+  },
+  "preferences": {
+    "title": "Preferences",
+    "description": "Customize your experience with personalized settings",
+    "actions": {
+      "savePreferences": "Save preferences"
+    },
+    "sections": {
+      "regional": {
+        "title": "Regional Settings",
+        "description": "Configure your location, language, and currency preferences",
+        "subsections": {
+          "currencyFormatting": {
+            "title": "Currency & Formatting"
+          },
+          "timeLanguage": {
+            "title": "Time & Language"
+          }
+        }
+      },
+      "notifications": {
+        "title": "Notification Preferences",
+        "description": "Choose how and when you want to be notified",
+        "subsections": {
+          "emailPush": {
+            "title": "Email & Push Preferences"
+          }
+        }
+      },
+      "display": {
+        "title": "Display & Theme",
+        "description": "Customize the appearance of your dashboard"
+      }
+    }
+  },
+  "dataTypes": {
+    "transactions": {
+      "label": "Transactions",
+      "description": "All transaction records with amounts, dates, and categories",
+      "estimatedSize": "~10MB for 10k transactions",
+      "fields": {
+        "id": "Transaction ID",
+        "date": "Date",
+        "amount": "Amount",
+        "description": "Description",
+        "category": "Category",
+        "account": "Account",
+        "type": "Transaction Type",
+        "tags": "Tags",
+        "notes": "Notes",
+        "receipt_url": "Receipt/Attachment"
+      }
+    },
+    "accounts": {
+      "label": "Accounts",
+      "description": "Bank accounts, credit cards, and financial account details",
+      "estimatedSize": "~1MB for 50 accounts",
+      "fields": {
+        "id": "Account ID",
+        "name": "Account Name",
+        "type": "Account Type",
+        "balance": "Current Balance",
+        "currency": "Currency",
+        "institution": "Financial Institution",
+        "account_number": "Account Number (masked)",
+        "created_date": "Created Date"
+      }
+    },
+    "budgets": {
+      "label": "Budgets",
+      "description": "Budget plans, limits, and spending tracking",
+      "estimatedSize": "~2MB for 100 budgets",
+      "fields": {
+        "id": "Budget ID",
+        "name": "Budget Name",
+        "amount": "Budget Amount",
+        "spent": "Amount Spent",
+        "remaining": "Remaining Amount",
+        "period": "Budget Period",
+        "categories": "Associated Categories",
+        "start_date": "Start Date",
+        "end_date": "End Date"
+      }
+    },
+    "goals": {
+      "label": "Financial Goals",
+      "description": "Savings goals, targets, and progress tracking",
+      "estimatedSize": "~1MB for 25 goals",
+      "fields": {
+        "id": "Goal ID",
+        "name": "Goal Name",
+        "target_amount": "Target Amount",
+        "current_amount": "Current Amount",
+        "progress_percentage": "Progress %",
+        "target_date": "Target Date",
+        "category": "Goal Category",
+        "status": "Status"
+      }
+    },
+    "categories": {
+      "label": "Categories",
+      "description": "Expense and income categories with spending patterns",
+      "estimatedSize": "~500KB for 200 categories",
+      "fields": {
+        "id": "Category ID",
+        "name": "Category Name",
+        "type": "Category Type",
+        "parent_category": "Parent Category",
+        "color": "Display Color",
+        "icon": "Icon",
+        "total_spent": "Total Spent",
+        "transaction_count": "Transaction Count"
+      }
+    },
+    "group_expenses": {
+      "label": "Group Expenses",
+      "description": "Shared expenses and splitting records",
+      "estimatedSize": "~3MB for 500 shared expenses",
+      "fields": {
+        "id": "Group Expense ID",
+        "title": "Expense Title",
+        "total_amount": "Total Amount",
+        "paid_by": "Paid By",
+        "participants": "Participants",
+        "split_method": "Split Method",
+        "date": "Date",
+        "status": "Settlement Status"
+      }
+    }
+  },
+  "multiDataTypeExport": {
+    "title": "Select Data to Export",
+    "selectedTypes": "{{count}} type selected",
+    "selectedTypes_plural": "{{count}} types selected",
+    "selectedFields": "{{count}} field selected",
+    "selectedFields_plural": "{{count}} fields selected",
+    "selectFields": "Select Fields",
+    "selectAll": "Select All",
+    "requiredOnly": "Required Only",
+    "required": "Required",
+    "exportSummaryTitle": "Export Summary:",
+    "exportSummaryText": "{{count}} data type selected",
+    "exportSummaryText_plural": "{{count}} data types selected"
+  },
+  "integrations": {
+    "title": "Integrations",
+    "description": "Connect external services to automate your financial workflow",
+    "sections": {
+      "gmail": {
+        "title": "Gmail Integration",
+        "description": "Automatically extract transactions from email receipts"
+      },
+      "splitwise": {
+        "title": "Splitwise Integration",
+        "description": "Sync group expenses with Splitwise automatically"
+      },
+      "comingSoon": {
+        "title": "More Coming Soon",
+        "description": "Additional integrations to enhance your experience",
+        "badge": "Coming Soon"
+      }
+    },
+    "upcomingIntegrations": {
+      "bankAPIs": "Bank APIs",
+      "slack": "Slack",
+      "telegram": "Telegram",
+      "webhooks": "Webhooks",
+      "csvImport": "CSV Import",
+      "apiAccess": "API Access"
+    }
+  },
+  "automation": {
+    "title": "Automation Settings",
+    "description": "Configure lightweight automations to keep your finances organised without adding clutter",
+    "sections": {
+      "transactionAutomations": {
+        "title": "Transaction Automations",
+        "description": "Automatically categorise, tag, or tweak incoming transactions based on simple rules",
+        "badge": "Smart rules & conditions"
+      },
+      "merchantPatterns": {
+        "title": "Merchant Patterns",
+        "description": "Keep merchant names consistent and automatically assign the right categories",
+        "badge": "Pattern management"
+      }
+    }
+  },
+  "data": {
+    "title": "Data & Privacy",
+    "description": "Manage your data, export options, and privacy settings",
+    "sections": {
+      "export": {
+        "title": "Export Data",
+        "description": "Download your financial data in various formats"
+      },
+      "import": {
+        "title": "Import Data",
+        "description": "Import transactions from bank statements or other sources"
+      },
+      "privacy": {
+        "title": "Privacy Settings",
+        "description": "Control your data privacy and sharing preferences"
+      },
+      "danger": {
+        "title": "Danger Zone",
+        "description": "Irreversible actions - proceed with caution"
+      }
+    }
+  },
+  "telegram": {
+    "notifications": {
+      "botCreated": "Telegram bot created successfully",
+      "createBotError": "Failed to create bot",
+      "botAction": "Bot {{action}} executed",
+      "botActionError": "Failed to {{action}} bot",
+      "userActionSuccess": "Action successful",
+      "userActionError": "Failed to {{action}} user"
+    },
+    "modals": {
+      "addBot": {
+        "title": "Add Telegram Bot",
+        "subtitle": "Connect a Telegram bot for transaction notifications and management.",
+        "form": {
+          "nameLabel": "Bot Name",
+          "namePlaceholder": "My Finance Bot",
+          "tokenLabel": "Bot Token",
+          "tokenPlaceholder": "123456789:ABCdefGHIjklMNOpqrsTUVwxyz",
+          "webhookLabel": "Webhook URL",
+          "webhookPlaceholder": "https://your-domain.com/api/telegram/webhook/",
+          "submit": "Create Bot"
+        }
+      },
+      "editBot": {
+        "title": "Edit Telegram Bot",
+        "subtitle": "Update your Telegram bot configuration."
+      },
+      "setupGuide": {
+        "title": "Telegram Bot Setup Guide",
+        "stepHeading": "Step {{step}}: {{title}}",
+        "availableCommands": "Available Commands",
+        "introHeading": "Setting up your Telegram Bot",
+        "stepsList": [
+          "Open Telegram and search for <code>@BotFather</code>",
+          "Send <code>/newbot</code> to create a new bot",
+          "Follow the instructions to name your bot",
+          "Copy the bot token provided by BotFather",
+          "Paste the token in the form above",
+          "Users can then find your bot and start conversations"
+        ],
+        "featuresHeading": "Bot Features",
+        "featuresList": [
+          "Receive transaction notifications",
+          "Add transactions via chat",
+          "Check account balances",
+          "Get spending summaries"
+        ]
+      },
+      "botStats": {
+        "title": "{{name}} Statistics",
+        "metrics": {
+          "totalUsers": "Total Users",
+          "activeUsers": "Active Users",
+          "totalMessages": "Total Messages",
+          "transactionsCreated": "Transactions Created"
+        }
+      }
+    }
+  }
+}

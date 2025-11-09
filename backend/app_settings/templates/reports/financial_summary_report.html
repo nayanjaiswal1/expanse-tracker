@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Financial Summary Report</title>
+    <style>
+        body { font-family: "Segoe UI", Arial, sans-serif; margin: 24px; color: #1d1d1f; }
+        h1, h2, h3 { color: #111827; margin-top: 32px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+        th, td { border: 1px solid #e5e7eb; padding: 8px 10px; text-align: left; font-size: 14px; }
+        th { background-color: #f3f4f6; color: #111827; }
+        .small { font-size: 12px; color: #6b7280; }
+        .metric-table td:first-child { font-weight: 600; width: 40%; background-color: #f9fafb; }
+    </style>
+</head>
+<body>
+    <h1>Financial Summary Report for {{ user.username }}</h1>
+    <p>Generated on {{ report_date }}</p>
+
+    <h2>Overview ({{ summary_data.overview.date_range.start }} → {{ summary_data.overview.date_range.end }})</h2>
+    <table class="metric-table">
+        <tr><td>Total Income</td><td>{{ summary_data.overview.total_income|floatformat:2 }}</td></tr>
+        <tr><td>Total Expenses</td><td>{{ summary_data.overview.total_expenses|floatformat:2 }}</td></tr>
+        <tr><td>Net Amount</td><td>{{ summary_data.overview.net_amount|floatformat:2 }}</td></tr>
+        <tr><td>Transaction Count</td><td>{{ summary_data.overview.total_transactions }}</td></tr>
+        <tr><td>Average Daily Spend</td><td>{{ summary_data.overview.average_daily_spend|floatformat:2 }}</td></tr>
+        {% if summary_data.overview.largest_expense.amount %}
+        <tr>
+            <td>Largest Expense</td>
+            <td>{{ summary_data.overview.largest_expense.amount|floatformat:2 }}
+                <span class="small">
+                    {% if summary_data.overview.largest_expense.merchant %}at {{ summary_data.overview.largest_expense.merchant }}{% endif %}
+                    {% if summary_data.overview.largest_expense.date %} ({{ summary_data.overview.largest_expense.date }}){% endif %}
+                </span>
+            </td>
+        </tr>
+        {% endif %}
+        {% if summary_data.overview.largest_income.amount %}
+        <tr>
+            <td>Largest Income</td>
+            <td>{{ summary_data.overview.largest_income.amount|floatformat:2 }}
+                {% if summary_data.overview.largest_income.date %}<span class="small">({{ summary_data.overview.largest_income.date }})</span>{% endif %}
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+
+    {% if summary_data.account_breakdown %}
+    <h2>Account Balances</h2>
+    <table>
+        <tr>
+            <th>Account</th>
+            <th>Type</th>
+            <th>Balance</th>
+            <th>Currency</th>
+        </tr>
+        {% for account in summary_data.account_breakdown %}
+        <tr>
+            <td>{{ account.name }}</td>
+            <td>{{ account.type|title }}</td>
+            <td>{{ account.balance|floatformat:2 }}</td>
+            <td>{{ account.currency }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if summary_data.category_breakdown %}
+    <h2>Category Breakdown (Expenses)</h2>
+    <table>
+        <tr>
+            <th>Category</th>
+            <th>Amount</th>
+            <th>Transactions</th>
+            <th>Share</th>
+        </tr>
+        {% for category in summary_data.category_breakdown %}
+        <tr>
+            <td>{{ category.category }}</td>
+            <td>{{ category.amount|floatformat:2 }}</td>
+            <td>{{ category.count }}</td>
+            <td>{{ category.percentage }}%</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if summary_data.merchant_breakdown %}
+    <h2>Top Merchants</h2>
+    <table>
+        <tr>
+            <th>Merchant</th>
+            <th>Total Amount</th>
+            <th>Transactions</th>
+        </tr>
+        {% for merchant in summary_data.merchant_breakdown %}
+        <tr>
+            <td>{{ merchant.merchant }}</td>
+            <td>{{ merchant.amount|floatformat:2 }}</td>
+            <td>{{ merchant.count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if summary_data.weekly_breakdown %}
+    <h2>Weekly Summary (Last 12 Weeks)</h2>
+    <table>
+        <tr>
+            <th>Week Starting</th>
+            <th>Income</th>
+            <th>Expenses</th>
+            <th>Net</th>
+            <th>Transactions</th>
+        </tr>
+        {% for row in summary_data.weekly_breakdown %}
+        <tr>
+            <td>{{ row.period }}</td>
+            <td>{{ row.income|floatformat:2 }}</td>
+            <td>{{ row.expenses|floatformat:2 }}</td>
+            <td>{{ row.net|floatformat:2 }}</td>
+            <td>{{ row.transaction_count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if summary_data.monthly_breakdown %}
+    <h2>Monthly Summary (Last 12 Months)</h2>
+    <table>
+        <tr>
+            <th>Month</th>
+            <th>Income</th>
+            <th>Expenses</th>
+            <th>Net</th>
+            <th>Transactions</th>
+        </tr>
+        {% for row in summary_data.monthly_breakdown %}
+        <tr>
+            <td>{{ row.period }}</td>
+            <td>{{ row.income|floatformat:2 }}</td>
+            <td>{{ row.expenses|floatformat:2 }}</td>
+            <td>{{ row.net|floatformat:2 }}</td>
+            <td>{{ row.transaction_count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if summary_data.yearly_breakdown %}
+    <h2>Yearly Summary</h2>
+    <table>
+        <tr>
+            <th>Year</th>
+            <th>Income</th>
+            <th>Expenses</th>
+            <th>Net</th>
+            <th>Transactions</th>
+        </tr>
+        {% for row in summary_data.yearly_breakdown %}
+        <tr>
+            <td>{{ row.period }}</td>
+            <td>{{ row.income|floatformat:2 }}</td>
+            <td>{{ row.expenses|floatformat:2 }}</td>
+            <td>{{ row.net|floatformat:2 }}</td>
+            <td>{{ row.transaction_count }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if summary_data.group_expenses %}
+    <h2>Recent Group Expenses</h2>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Group</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Currency</th>
+        </tr>
+        {% for expense in summary_data.group_expenses %}
+        <tr>
+            <td>{{ expense.title }}</td>
+            <td>{{ expense.group }}</td>
+            <td>{{ expense.date }}</td>
+            <td>{{ expense.amount|floatformat:2 }}</td>
+            <td>{{ expense.currency }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,27 @@
+.policy-page-container {
+  @apply container mx-auto p-8 pt-24;
+}
+
+.policy-back-link {
+  @apply text-primary-600 hover:underline flex items-center mb-8 transition-colors duration-200;
+}
+
+.policy-title {
+  @apply text-4xl font-bold mb-6 text-secondary-900 dark:text-white;
+}
+
+.policy-heading {
+  @apply text-2xl font-bold mb-4 text-secondary-800 dark:text-secondary-200;
+}
+
+.policy-paragraph {
+  @apply mb-4 text-secondary-700 dark:text-secondary-300 leading-relaxed;
+}
+
+.policy-list {
+  @apply list-disc list-inside mb-4 text-secondary-700 dark:text-secondary-300;
+}
+
+.policy-list-item {
+  @apply mb-2;
+}

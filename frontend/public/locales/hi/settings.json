@@ -1,0 +1,59 @@
+{
+  "telegram": {
+    "notifications": {
+      "botCreated": "टेलीग्राम बॉट सफलतापूर्वक बनाया गया",
+      "createBotError": "बॉट बनाना विफल रहा",
+      "botAction": "बॉट {{action}} पूरा हुआ",
+      "botActionError": "बॉट को {{action}} करने में विफल",
+      "userActionSuccess": "क्रिया सफल हुई",
+      "userActionError": "उपयोगकर्ता को {{action}} करने में विफल"
+    },
+    "modals": {
+      "addBot": {
+        "title": "टेलीग्राम बॉट जोड़ें",
+        "form": {
+          "nameLabel": "बॉट का नाम",
+          "namePlaceholder": "मेरा फाइनेंस बॉट",
+          "tokenLabel": "बॉट टोकन",
+          "tokenPlaceholder": "123456789:ABCdefGHIjklMNOpqrsTUVwxyz",
+          "webhookLabel": "Webhook URL",
+          "webhookPlaceholder": "https://your-domain.com/api/telegram/webhook/",
+          "submit": "बॉट बनाएँ"
+        }
+      },
+      "setupGuide": {
+        "title": "टेलीग्राम बॉट सेटअप गाइड",
+        "stepHeading": "चरण {{step}}: {{title}}",
+        "availableCommands": "उपलब्ध कमांड",
+        "introHeading": "अपने टेलीग्राम बॉट को सेट करें",
+        "stepsList": [
+          "टेलीग्राम खोलें और <code>@BotFather</code> खोजें",
+          "<code>/newbot</code> भेजकर नया बॉट बनाएं",
+          "अपने बॉट का नाम रखने के लिए निर्देशों का पालन करें",
+          "BotFather द्वारा दिया गया बॉट टोकन कॉपी करें",
+          "ऊपर दिए गए फ़ॉर्म में टोकन पेस्ट करें",
+          "उपयोगकर्ता आपके बॉट को ढूंढकर वार्तालाप शुरू कर सकते हैं"
+        ],
+        "featuresHeading": "बॉट सुविधाएँ",
+        "featuresList": [
+          "लेनदेन सूचनाएँ प्राप्त करें",
+          "चैट के माध्यम से लेनदेन जोड़ें",
+          "खाता शेष देखें",
+          "खर्च का सारांश प्राप्त करें"
+        ]
+      },
+      "editBot": {
+        "title": "बॉट संपादित करें"
+      },
+      "botStats": {
+        "title": "{{name}} सांख्यिकी",
+        "metrics": {
+          "totalUsers": "कुल उपयोगकर्ता",
+          "activeUsers": "सक्रिय उपयोगकर्ता",
+          "totalMessages": "कुल संदेश",
+          "transactionsCreated": "बनी लेनदेन"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+# Ignore .git directory
+.git
+
+# Ignore .env file
+.env
+
+# Ignore virtual environment
+backend/.venv
+
+# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+
+# Ignore Django specific files
+db.sqlite3
+db.sqlite31
+
+# Ignore Node.js modules and build output
+frontend/node_modules/
+frontend/dist/
+
+# Ignore Docker-related files
+docker-compose.yml
+
+# Ignore specific files that are not needed in the Docker image
+*.log
+*.txt
+*.csv
+*.bat
+*.sh

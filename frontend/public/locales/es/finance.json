@@ -1,0 +1,104 @@
+{
+  "finance": {
+    "budgets": {
+      "modals": {
+        "category": {
+          "addTitle": "Agregar categoría",
+          "editTitle": "Editar categoría",
+          "fields": {
+            "categoryLabel": "Categoría",
+            "categoryPlaceholder": "Selecciona una categoría",
+            "allocatedLabel": "Monto asignado",
+            "allocatedPlaceholder": "0.00",
+            "thresholdLabel": "Umbral de alerta (%)",
+            "thresholdPlaceholder": "80",
+            "notesLabel": "Notas (opcional)",
+            "notesPlaceholder": "Notas adicionales",
+            "essentialLabel": "Categoría esencial"
+          },
+          "submitCreate": "Agregar categoría",
+          "submitUpdate": "Actualizar categoría"
+        },
+        "editBudget": {
+          "title": "Editar presupuesto"
+        },
+        "expense": {
+          "title": "Agregar gasto - {{category}}",
+          "titleFallback": "Agregar gasto",
+          "fields": {
+            "descriptionLabel": "Descripción",
+            "descriptionPlaceholder": "¿En qué gastaste?",
+            "amountLabel": "Monto",
+            "amountPlaceholder": "0.00",
+            "accountLabel": "Cuenta (opcional)",
+            "accountPlaceholder": "Selecciona una cuenta (opcional)",
+            "dateLabel": "Fecha"
+          },
+          "submit": "Agregar gasto"
+        },
+        "deleteCategory": {
+          "title": "Eliminar categoría",
+          "message": "¿Seguro que quieres eliminar \"{{name}}\"? Esta acción no se puede deshacer."
+        },
+        "deleteBudget": {
+          "title": "Eliminar presupuesto",
+          "message": "¿Seguro que quieres eliminar \"{{name}}\"? Esta acción no se puede deshacer."
+        }
+      }
+    },
+    "accounts": {
+      "modals": {
+        "accountForm": {
+          "addTitle": "Agregar nueva cuenta",
+          "addSubtitle": "Conecta una cuenta para empezar a rastrear saldos.",
+          "editTitle": "Editar cuenta",
+          "editSubtitle": "Actualiza los detalles y preferencias de la cuenta."
+        },
+        "delete": {
+          "title": "Eliminar cuenta",
+          "message": "¿Seguro que quieres eliminar la cuenta \"{{name}}\"? Esta acción no se puede deshacer."
+        }
+      },
+      "notifications": {
+        "deleteFailed": {
+          "title": "Error al eliminar",
+          "message": "Ocurrió un error al eliminar la cuenta."
+        }
+      }
+    }
+  },
+  "goals": {
+    "detail": {
+      "back": "Volver a metas",
+      "status": {
+        "active": "Activa",
+        "paused": "Pausada",
+        "completed": "Completada",
+        "cancelled": "Cancelada",
+        "unknown": "Desconocido"
+      },
+      "actions": {
+        "updateProgress": "Actualizar progreso",
+        "pause": "Pausar",
+        "resume": "Reanudar"
+      },
+      "progress": {
+        "label": "Progreso",
+        "current": "Actual",
+        "target": "Objetivo",
+        "remaining": "Restante"
+      },
+      "dates": {
+        "started": "Inicio: {{date}}",
+        "target": "Objetivo: {{date}}"
+      },
+      "images": {
+        "title": "Imágenes de la meta ({{count}})",
+        "alt": "Imagen de la meta",
+        "numberedAlt": "Imagen de la meta {{index}}",
+        "thumbnailAlt": "Miniatura {{index}}",
+        "fullscreenAlt": "Imagen de la meta a tamaño completo"
+      }
+    }
+  }
+}

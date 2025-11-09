@@ -1,0 +1,501 @@
+{
+  "dataTypes": {
+    "transactions": {
+      "label": "Transactions",
+      "description": "All transaction records with amounts, dates, and categories",
+      "estimatedSize": "~10MB for 10k transactions",
+      "fields": {
+        "id": "Transaction ID",
+        "date": "Date",
+        "amount": "Amount",
+        "description": "Description",
+        "category": "Category",
+        "account": "Account",
+        "type": "Transaction Type",
+        "tags": "Tags",
+        "notes": "Notes",
+        "receipt_url": "Receipt/Attachment"
+      }
+    },
+    "accounts": {
+      "label": "Accounts",
+      "description": "Bank accounts, credit cards, and financial account details",
+      "estimatedSize": "~1MB for 50 accounts",
+      "fields": {
+        "id": "Account ID",
+        "name": "Account Name",
+        "type": "Account Type",
+        "balance": "Current Balance",
+        "currency": "Currency",
+        "institution": "Financial Institution",
+        "account_number": "Account Number (masked)",
+        "created_date": "Created Date"
+      }
+    },
+    "budgets": {
+      "label": "Budgets",
+      "description": "Budget plans, limits, and spending tracking",
+      "estimatedSize": "~2MB for 100 budgets",
+      "fields": {
+        "id": "Budget ID",
+        "name": "Budget Name",
+        "amount": "Budget Amount",
+        "spent": "Amount Spent",
+        "remaining": "Remaining Amount",
+        "period": "Budget Period",
+        "categories": "Associated Categories",
+        "start_date": "Start Date",
+        "end_date": "End Date"
+      }
+    },
+    "goals": {
+      "label": "Financial Goals",
+      "description": "Savings goals, targets, and progress tracking",
+      "estimatedSize": "~1MB for 25 goals",
+      "fields": {
+        "id": "Goal ID",
+        "name": "Goal Name",
+        "target_amount": "Target Amount",
+        "current_amount": "Current Amount",
+        "progress_percentage": "Progress %",
+        "target_date": "Target Date",
+        "category": "Goal Category",
+        "status": "Status"
+      }
+    },
+    "categories": {
+      "label": "Categories",
+      "description": "Expense and income categories with spending patterns",
+      "estimatedSize": "~500KB for 200 categories",
+      "fields": {
+        "id": "Category ID",
+        "name": "Category Name",
+        "type": "Category Type",
+        "parent_category": "Parent Category",
+        "color": "Display Color",
+        "icon": "Icon",
+        "total_spent": "Total Spent",
+        "transaction_count": "Transaction Count"
+      }
+    },
+    "group_expenses": {
+      "label": "Group Expenses",
+      "description": "Shared expenses and splitting records",
+      "estimatedSize": "~3MB for 500 shared expenses",
+      "fields": {
+        "id": "Group Expense ID",
+        "title": "Expense Title",
+        "total_amount": "Total Amount",
+        "paid_by": "Paid By",
+        "participants": "Participants",
+        "split_method": "Split Method",
+        "date": "Date",
+        "status": "Settlement Status"
+      }
+    }
+  },
+  "exports": {
+    "title": "Select Data to Export",
+    "selectedTypes": "{{count}} type selected",
+    "selectedTypes_plural": "{{count}} types selected",
+    "selectedFields": "{{count}} field selected",
+    "selectedFields_plural": "{{count}} fields selected",
+    "selectFields": "Select Fields",
+    "requiredOnly": "Required Only",
+    "exportSummaryTitle": "Export Summary:",
+    "exportSummaryText": "{{count}} data type selected",
+    "exportSummaryText_plural": "{{count}} data types selected"
+  },
+  "budgets": {
+    "form": {
+      "updateSuccess": "Budget updated successfully",
+      "createSuccess": "Budget created successfully",
+      "saveError": "Failed to save budget",
+      "fields": {
+        "name": "Budget Name",
+        "namePlaceholder": "e.g., Monthly Budget - March 2024",
+        "nameDescription": "Choose a descriptive name for your budget",
+        "description": "Description",
+        "descriptionPlaceholder": "Brief description of this budget",
+        "descriptionHint": "Optional notes about this budget",
+        "periodType": "Period Type",
+        "periodTypeDescription": "How often this budget repeats",
+        "startDate": "Start Date",
+        "startDateDescription": "When this budget period begins",
+        "endDate": "End Date",
+        "endDateDescription": "When this budget period ends (auto-calculated for non-custom periods)",
+        "totalAmount": "Total Budget Amount",
+        "totalAmountDescription": "The maximum amount to spend during this period",
+        "isActive": "Active Budget",
+        "isActiveDescription": "Uncheck to pause this budget",
+        "autoRollover": "Auto-create next period budget",
+        "autoRolloverDescription": "Automatically create a new budget when this period ends"
+      }
+    },
+    "delete": {
+      "success": "Budget deleted successfully",
+      "error": "Failed to delete budget"
+    },
+    "details": {
+      "missingIdError": "Budget ID is missing. Cannot navigate to details."
+    },
+    "filters": {
+      "status": {
+        "all": "All statuses"
+      },
+      "periodType": {
+        "all": "All periods",
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "yearly": "Yearly",
+        "custom": "Custom"
+      },
+      "modalTitle": "Filter Budgets",
+      "statusSectionTitle": "Status",
+      "periodTypeSectionTitle": "Period Type"
+    },
+    "status": {
+      "overBudget": "Over Budget"
+    },
+    "toolbar": {
+      "addBudget": "Add Budget"
+    },
+    "emptyState": {
+      "createBudgetButton": "Create Budget"
+    },
+    "modal": {
+      "editBudgetTitle": "Edit Budget",
+      "editBudgetDescription": "Update your budget details below.",
+      "createNewBudgetTitle": "Create New Budget",
+      "createNewBudgetDescription": "Create a new budget to track your spending goals."
+    },
+    "confirmDialog": {
+      "deleteBudgetTitle": "Delete budget",
+      "deleteBudgetMessage": "Are you sure you want to delete \"{{budgetName}}\"? This action cannot be undone.",
+      "deleteButton": "Delete"
+    }
+  },
+  "finance": {
+    "budgets": {
+      "modals": {
+        "category": {
+          "addTitle": "Add Category",
+          "editTitle": "Edit Category",
+          "fields": {
+            "categoryLabel": "Category",
+            "categoryPlaceholder": "Select a category",
+            "allocatedLabel": "Allocated Amount",
+            "allocatedPlaceholder": "0.00",
+            "thresholdLabel": "Alert Threshold (%)",
+            "thresholdPlaceholder": "80",
+            "notesLabel": "Notes (Optional)",
+            "notesPlaceholder": "Additional notes",
+            "essentialLabel": "Essential Category"
+          },
+          "submitCreate": "Add Category",
+          "submitUpdate": "Update Category"
+        },
+        "editBudget": {
+          "title": "Edit Budget"
+        },
+        "expense": {
+          "title": "Add Expense - {{category}}",
+          "titleFallback": "Add Expense",
+          "fields": {
+            "descriptionLabel": "Description",
+            "descriptionPlaceholder": "What did you spend on?",
+            "amountLabel": "Amount",
+            "amountPlaceholder": "0.00",
+            "accountLabel": "Account (Optional)",
+            "accountPlaceholder": "Select account (optional)",
+            "dateLabel": "Date"
+          },
+          "submit": "Add Expense"
+        },
+        "deleteCategory": {
+          "title": "Remove budget category",
+          "message": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
+        },
+        "deleteBudget": {
+          "title": "Delete budget",
+          "message": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
+        }
+      }
+    },
+    "accounts": {
+      "modals": {
+        "accountForm": {
+          "addTitle": "Add New Account",
+          "addSubtitle": "Connect an account to start tracking balances.",
+          "editTitle": "Edit Account",
+          "editSubtitle": "Update account details and preferences."
+        },
+        "delete": {
+          "title": "Delete account",
+          "message": "Are you sure you want to delete the account \"{{name}}\"? This action cannot be undone."
+        }
+      },
+      "notifications": {
+        "deleteFailed": {
+          "title": "Unable to remove account",
+          "message": "We couldn't delete this account right now. Please try again in a moment."
+        }
+      }
+    }
+  },
+  "emptyStates": {
+    "errors": {
+      "nameRequired": "Account name is required"
+    }
+  },
+  "goals": {
+    "overview": {
+      "title": "Overview",
+      "totalGoals": "Total goals",
+      "activeGoals": "Active goals",
+      "completedGoals": "Completed goals",
+      "totalTarget": "Total target",
+      "hidden": "Hidden",
+      "toggleAmounts": "Toggle amounts",
+      "createGoal": "Create Goal"
+    },
+    "filters": {
+      "title": "Filter Goals",
+      "goalType": "Goal Type",
+      "status": "Status",
+      "searchChip": "Search: {{query}}"
+    },
+    "status": {
+      "all": "All statuses",
+      "active": "Active",
+      "paused": "Paused",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "goalTypes": {
+      "all": "All goal types",
+      "savings": "Savings",
+      "spending": "Spending",
+      "debt_payoff": "Debt Payoff",
+      "investment": "Investment",
+      "expense_reduction": "Expense Reduction",
+      "income_increase": "Income Increase",
+      "emergency_fund": "Emergency Fund",
+      "retirement": "Retirement",
+      "education": "Education",
+      "travel": "Travel",
+      "home": "Home",
+      "car": "Car",
+      "other": "Other"
+    },
+    "sections": {
+      "activeGoals": "Active Goals",
+      "completedGoals": "Completed Goals",
+      "otherGoals": "Other Goals"
+    },
+    "toolbar": {
+      "addGoal": "Add Goal",
+      "searchGoals": "Search goals..."
+    },
+    "emptyState": {
+      "createButton": "Create Goal"
+      ,
+        "noGoalsYet": {
+          "title": "No goals yet",
+          "message": "Start tracking your financial goals to stay on track with your savings and spending targets."
+        },
+        "noGoalsFound": {
+          "title": "No goals found",
+          "message": "No goals match your current filters. Try adjusting your search or filter criteria."
+        }
+    },
+    "form": {
+      "addTitle": "Add New Goal",
+      "addDescription": "Set a new financial goal to track your progress.",
+      "editTitle": "Edit Goal",
+      "editDescription": "Update your financial goal details.",
+      "fields": {
+        "name": "Goal Name",
+        "namePlaceholder": "e.g., Emergency Fund, Vacation, New Car",
+        "nameDescription": "Choose a meaningful name for your goal",
+        "description": "Description",
+        "descriptionPlaceholder": "Describe your goal and why it matters to you...",
+        "goalType": "Goal Type",
+        "goalTypeDescription": "What kind of financial goal is this?",
+        "targetAmount": "Target Amount",
+        "targetAmountDescription": "The total amount you want to achieve",
+        "currentAmount": "Current Amount",
+        "currentAmountDescription": "How much you currently have towards this goal",
+        "currency": "Currency",
+        "startDate": "Start Date",
+        "targetDate": "Target Date",
+        "targetDateDescription": "When do you want to achieve this goal?",
+        "category": "Category",
+        "categoryDescription": "Optional category for this goal",
+        "account": "Linked Account",
+        "accountDescription": "Link to a specific account for tracking",
+        "autoTrack": "Auto Track",
+        "priority": "Priority",
+        "priorityDescription": "How important is this goal?",
+        "isActive": "Goal is active",
+        "isActiveDescription": "Uncheck to pause this goal",
+        "autoContribute": "Enable automatic contributions",
+        "autoContributeDescription": "Automatically contribute to this goal on a schedule",
+        "contributionFrequency": "Contribution Frequency",
+        "contributionAmount": "Contribution Amount"
+      },
+      "validation": {
+        "targetAmountPositive": "Target amount must be positive",
+        "currentAmountPositive": "Current amount must be positive"
+      },
+      "submitCreate": "Create Goal",
+      "submitUpdate": "Update Goal"
+    },
+    "progress": {
+      "title": "Update Progress",
+      "amountPlaceholder": "Enter amount"
+    },
+    "actions": {
+      "updateProgress": "Update Progress",
+      "quickEdit": "Quick Edit",
+      "pause": "Pause Goal",
+      "resume": "Resume Goal"
+    },
+    "delete": {
+      "message": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
+    },
+    "notifications": {
+      "tryAgain": "Please try again."
+    },
+    "detail": {
+      "back": "Back to Goals",
+      "status": {
+        "unknown": "Unknown"
+      },
+      "actions": {
+        "updateProgress": "Update Progress"
+      },
+      "progress": {
+        "label": "Progress",
+        "current": "Current",
+        "target": "Target",
+        "remaining": "Remaining"
+      },
+      "dates": {
+        "started": "Started: {{date}}",
+        "target": "Target: {{date}}"
+      },
+      "images": {
+        "title": "Goal Images ({{count}})",
+        "alt": "Goal image",
+        "numberedAlt": "Goal image {{index}}",
+        "thumbnailAlt": "Thumbnail {{index}}",
+        "fullscreenAlt": "Goal image full size"
+      }
+    }
+  },
+  "expenses": {
+    "form": {
+      "addTitle": "Add Expense",
+      "description": "This expense will be split equally among all members",
+      "fields": {
+        "title": "Expense Description",
+        "titlePlaceholder": "e.g., Dinner at restaurant, Uber ride, Movie tickets",
+        "titleDescription": "What did you spend money on?",
+        "totalAmount": "Total Amount",
+        "totalAmountDescription": "The full amount paid",
+        "paidBy": "Paid by",
+        "paidByDescription": "Who paid for this expense?",
+        "date": "Date",
+        "dateDescription": "When was this expense made?",
+        "splitMethod": "Split Method",
+        "splitMethodDescription": "How should this be divided?",
+        "notes": "Notes (Optional)",
+        "notesPlaceholder": "Add any additional details about this expense..."
+      },
+      "submit": "Add Expense"
+    },
+    "splitMethods": {
+      "equal": "Equal Split",
+      "percentage": "By Percentage",
+      "amount": "By Amount",
+      "shares": "By Shares"
+    }
+  },
+  "lending": {
+    "types": {
+      "lend": "Lend Money",
+      "borrow": "Borrow Money"
+    },
+    "notifications": {
+      "updateSuccess": "Transaction updated successfully",
+      "error": "Failed to save transaction"
+    },
+    "form": {
+      "addTitle": "Manage Money Transaction",
+      "description": "Record money lent to or borrowed from someone",
+      "editTitle": {
+        "lend": "Edit Lending Transaction",
+        "borrow": "Edit Borrowing Transaction"
+      },
+      "editDescription": {
+        "lend": "Update the lending transaction details below.",
+        "borrow": "Update the borrowing transaction details below."
+      },
+      "fields": {
+        "type": "What would you like to do?",
+        "typeDescription": "Are you lending or borrowing money?",
+        "contact": "Contact",
+        "contactPlaceholder": "Select person...",
+        "contactDescription": "Who is involved in this transaction?",
+        "amount": "Amount",
+        "amountDescription": "How much money?",
+        "description": "What's this for?",
+        "descriptionPlaceholder": "e.g., Car repair, Emergency fund, Rent payment",
+        "descriptionHint": "Brief description of the purpose",
+        "dueDate": "Due Date",
+        "dueDateDescription": "When should this be repaid? (optional)",
+        "interestRate": "Interest Rate (%)",
+        "interestRateDescription": "Optional interest rate",
+        "notes": "Additional Notes",
+        "notesPlaceholder": "Optional notes..."
+      },
+      "submitLend": "Record Loan",
+      "submitBorrow": "Record Borrowing",
+      "submitUpdate": "Update Transaction"
+    }
+  },
+  "invoiceUploadChat": {
+    "chatTitle": "Upload invoices",
+    "uploadTitle": "Invoice upload assistant",
+    "notesOptional": "Notes (optional)",
+    "notesPlaceholder": "Share context or instructions for this upload...",
+    "defaultAccount": "Default account",
+    "assignLater": "Assign later",
+    "attachInvoice": "Attach invoice",
+    "remove": "Remove",
+    "uploadAndParse": "Upload & parse",
+    "initialMessage": "Upload a receipt or invoice to let the assistant extract transactions for you.",
+    "documentParsed": "Document parsed",
+    "detectedType": "Detected as {{documentType}}",
+    "transactionsCreated": "{{count}} transactions created",
+    "unableToProcessUpload": "Unable to process this upload.",
+    "failedToLoadHistory": "Failed to load invoice chat history",
+    "unableToLoadChat": "Unable to load chat",
+    "tryAgainLater": "Please try again in a moment.",
+    "transactionsAdded": "Transactions added",
+    "insertedTransactions": "Successfully added {{count}} {{entry}} to your ledger.",
+    "entry": "entry",
+    "entries": "entries",
+    "selectAFile": "Select a file",
+    "attachInvoiceToParse": "Attach an invoice or receipt to parse.",
+    "uploadFailed": "Invoice upload failed",
+    "unableToParseDocument": "Unable to parse document",
+    "tryWithClearerScan": "Try again with a clearer scan or PDF.",
+    "uploadedDocument": "Uploaded document",
+    "detectedAs": "Detected as {{documentType}}",
+    "documentProcessed": "Document processed",
+    "transactionCount": "{{count}} transaction{{plural}}",
+    "totalAmount": "Total amount: {{total}} {{currency}}"
+  }
+}

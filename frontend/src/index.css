@@ -1,0 +1,55 @@
+/* Import custom styles */
+@import './styles/common.css';
+@import './styles/typography.css';
+@import './styles/theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    @apply bg-white dark:bg-secondary-900;
+    @apply text-secondary-900 dark:text-secondary-100;
+    @apply transition-colors duration-300;
+  }
+
+  * {
+    @apply border-secondary-200 dark:border-secondary-700;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-secondary-100 dark:bg-secondary-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-secondary-300 dark:bg-secondary-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-secondary-400 dark:bg-secondary-500;
+  }
+}
+
+/* Utility classes */
+.glass {
+  @apply bg-white/10 dark:bg-secondary-900/10;
+  @apply backdrop-blur-md;
+  @apply border border-white/20 dark:border-secondary-700/50;
+}
+
+.gradient-bg {
+  @apply bg-gradient-to-br from-primary-50 via-white to-secondary-50;
+  @apply dark:from-secondary-900 dark:via-secondary-800 dark:to-secondary-900;
+}

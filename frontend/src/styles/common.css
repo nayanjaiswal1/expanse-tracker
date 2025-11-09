@@ -1,0 +1,25 @@
+/* Utilities - animations are now in Tailwind config to reduce duplication */
+.max-h-600px {
+  max-height: 600px;
+}
+
+/* Toast Notifications */
+.theme-notification {
+  @apply bg-white dark:bg-secondary-800 border border-gray-200 dark:border-secondary-700 rounded-lg shadow-md;
+}
+
+.theme-notification-success {
+  @apply bg-green-50 dark:bg-green-900 border-green-200 dark:border-green-700;
+}
+
+.theme-notification-error {
+  @apply bg-red-50 dark:bg-red-900 border-red-200 dark:border-red-700;
+}
+
+.theme-notification-warning {
+  @apply bg-yellow-50 dark:bg-yellow-900 border-yellow-200 dark:border-yellow-700;
+}
+
+.theme-notification-info {
+  @apply bg-blue-50 dark:bg-blue-900 border-blue-200 dark:border-blue-700;
+}

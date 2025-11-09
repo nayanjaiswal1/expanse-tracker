@@ -1,0 +1,15 @@
+{
+  "actions": {
+    "cancel": "रद्द करें",
+    "close": "बंद करें",
+    "gotIt": "समझ गया",
+    "delete": "हटाएँ",
+    "back": "वापस",
+    "continue": "जारी रखें",
+    "clear_all": "सब साफ़ करो",
+    "remove": "हटाना"
+  },
+  "labels": {
+    "yourLocation": "आपका स्थान"
+  }
+}

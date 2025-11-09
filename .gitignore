@@ -1,0 +1,70 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+*.log.*
+
+# Virtual environment
+backend/.venv/
+backend/venv/
+.venv/
+venv/
+
+# Django specific
+db.sqlite3
+db.sqlite31
+*.sqlite3
+media/
+staticfiles/
+celerybeat-schedule*
+
+# Node.js
+frontend/node_modules/
+frontend/dist/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.production
+*.env
+
+# Secrets and credentials
+secrets/
+env.json
+credentials.json
+*secret*
+*credentials*
+
+# IDE/Editor files
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+nul
+
+# Coverage reports
+htmlcov/
+.coverage
+.pytest_cache/
+
+# Log files
+logs/
