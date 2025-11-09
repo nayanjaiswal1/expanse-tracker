@@ -130,3 +130,23 @@ class UploadedFileAdmin(admin.ModelAdmin):
         return "Not linked"
     linked_to_display.short_description = "Linked To"
 
+
+@admin.register(models.ChatMessage)
+class ChatMessageAdmin(admin.ModelAdmin):
+    list_display = ("user", "conversation_id", "message_type", "status", "created_at")
+    list_filter = ("message_type", "status", "created_at")
+    search_fields = ("content", "user__username", "user__email")
+    autocomplete_fields = ("user", "related_transaction", "related_file")
+    readonly_fields = ("created_at", "updated_at", "metadata")
+    date_hierarchy = "created_at"
+
+
+@admin.register(models.StatementPassword)
+class StatementPasswordAdmin(admin.ModelAdmin):
+    list_display = ("user", "account", "is_default", "success_count", "last_used")
+    list_filter = ("is_default",)
+    search_fields = ("user__username", "user__email", "password_hint")
+    autocomplete_fields = ("user", "account")
+    readonly_fields = ("created_at", "updated_at", "success_count", "last_used")
+    exclude = ("encrypted_password",)  # Hide encrypted password from admin
+

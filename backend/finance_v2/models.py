@@ -160,7 +160,15 @@ class SoftDeleteModel(models.Model):
 
 class Transaction(SoftDeleteModel):
     """Core financial transaction representing money in or out."""
-    
+
+    CLASSIFICATION_CHOICES = [
+        ('regular', 'Regular'),
+        ('charity', 'Charity'),
+        ('family', 'Family Support'),
+        ('reimbursable', 'Reimbursable'),
+        ('one_time', 'One-time'),
+    ]
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="transactions_v2")
     account = models.ForeignKey(
         'finance.Account',  # Using string reference to avoid circular import
@@ -190,6 +198,15 @@ class Transaction(SoftDeleteModel):
         blank=True,
         related_name="transactions",
     )
+
+    # New fields for enhanced expense tracking
+    expense_classification = models.CharField(
+        max_length=20,
+        choices=CLASSIFICATION_CHOICES,
+        default='regular',
+    )
+    exclude_from_totals = models.BooleanField(default=False)
+    chat_metadata = models.JSONField(default=dict, blank=True)
 
     metadata = models.JSONField(default=dict, blank=True)
 
@@ -251,6 +268,13 @@ class TransactionItem(models.Model):
 class TransactionSplit(models.Model):
     """Recorded splits for group transactions."""
 
+    SPLIT_METHOD_CHOICES = [
+        ('equal', 'Equal'),
+        ('percentage', 'Percentage'),
+        ('amount', 'Amount'),
+        ('shares', 'Shares'),
+    ]
+
     transaction = models.ForeignKey(
         Transaction, on_delete=models.CASCADE, related_name="splits"
     )
@@ -258,6 +282,20 @@ class TransactionSplit(models.Model):
         GroupMember, on_delete=models.CASCADE, related_name="splits"
     )
     amount = models.DecimalField(max_digits=15, decimal_places=2)
+
+    # New fields for flexible splits
+    split_method = models.CharField(
+        max_length=20,
+        choices=SPLIT_METHOD_CHOICES,
+        default='equal',
+    )
+    split_value = models.DecimalField(
+        max_digits=12,
+        decimal_places=4,
+        default=0,
+        help_text="Percentage (e.g., 33.33) or shares (e.g., 2)"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -392,6 +430,18 @@ class UploadedFile(models.Model):
     # OCR results (for images/PDFs)
     ocr_text = models.TextField(blank=True)
 
+    # New fields for enhanced statement management
+    is_password_protected = models.BooleanField(default=False)
+    raw_text = models.TextField(blank=True, help_text="Raw extracted text for comparison")
+    parsed_data = models.JSONField(blank=True, null=True, help_text="Structured parsed data")
+    used_password = models.ForeignKey(
+        'StatementPassword',
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='unlocked_files'
+    )
+
     # Metadata - stores everything:
     # - Processing status: {'processing_status': 'completed', 'celery_task_id': 'abc-123'}
     # - Statement data: {'period_start': '2024-01-01', 'transactions_created': 50}
@@ -462,3 +512,133 @@ class UploadedFile(models.Model):
     def is_processed(self) -> bool:
         """Check if file has been processed successfully."""
         return self.metadata.get('processing_status') == 'completed'
+
+
+class ChatMessage(models.Model):
+    """WhatsApp-style chat messages for quick transaction entry."""
+
+    MESSAGE_TYPE_CHOICES = [
+        ('user', 'User'),
+        ('system', 'System'),
+        ('suggestion', 'Suggestion'),
+    ]
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='chat_messages'
+    )
+    conversation_id = models.CharField(
+        max_length=255,
+        default='main',
+        db_index=True,
+        help_text="Group messages by conversation"
+    )
+    message_type = models.CharField(
+        max_length=20,
+        choices=MESSAGE_TYPE_CHOICES,
+        default='user'
+    )
+    content = models.TextField()
+    metadata = models.JSONField(
+        default=dict,
+        help_text="Parsed data, mentions, AI confidence, etc."
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='draft'
+    )
+
+    related_transaction = models.ForeignKey(
+        Transaction,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='chat_messages'
+    )
+    related_file = models.ForeignKey(
+        UploadedFile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='chat_messages'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'finance_chat_messages'
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'conversation_id', '-created_at']),
+            models.Index(fields=['user', 'status']),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.user} - {self.conversation_id} - {self.created_at:%Y-%m-%d}"
+
+
+class StatementPassword(models.Model):
+    """Encrypted password storage for password-protected statements."""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='statement_passwords'
+    )
+    account = models.ForeignKey(
+        'finance.Account',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='statement_passwords'
+    )
+
+    encrypted_password = models.BinaryField(
+        help_text="Fernet encrypted password"
+    )
+    password_hint = models.CharField(max_length=255, blank=True)
+    is_default = models.BooleanField(
+        default=False,
+        help_text="Default password to try first"
+    )
+
+    last_used = models.DateTimeField(null=True, blank=True)
+    success_count = models.IntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'finance_statement_passwords'
+        ordering = ['-is_default', '-success_count']
+        indexes = [
+            models.Index(fields=['user', 'account']),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.user} - {self.account or 'Global'}"
+
+    def set_password(self, plain_password: str):
+        """Encrypt and store password using Fernet."""
+        from cryptography.fernet import Fernet
+        from django.conf import settings
+        key = getattr(settings, 'STATEMENT_PASSWORD_KEY', Fernet.generate_key())
+        cipher = Fernet(key)
+        self.encrypted_password = cipher.encrypt(plain_password.encode())
+
+    def get_password(self) -> str:
+        """Decrypt and return password."""
+        from cryptography.fernet import Fernet
+        from django.conf import settings
+        key = getattr(settings, 'STATEMENT_PASSWORD_KEY', Fernet.generate_key())
+        cipher = Fernet(key)
+        return cipher.decrypt(self.encrypted_password).decode()
