@@ -56,6 +56,22 @@ class UserPreferences(TimestampedModel):
         help_text="General UI layout preferences (e.g., collapsed sections)"
     )
 
+    # New UI preferences
+    sidebar_collapsed = models.BooleanField(
+        default=False,
+        help_text="Whether sidebar is collapsed by default"
+    )
+    chat_mode = models.CharField(
+        max_length=20,
+        default="ai",
+        choices=[
+            ("normal", "Normal"),
+            ("ai", "AI"),
+            ("shortcut", "Shortcut"),
+        ],
+        help_text="Chat interface mode"
+    )
+
     class Meta:
         verbose_name = "User Preferences"
         verbose_name_plural = "User Preferences"
@@ -72,6 +88,7 @@ class AISettings(TimestampedModel):
         ("openai", "OpenAI"),
         ("ollama", "Ollama"),
         ("anthropic", "Anthropic"),
+        ("gemini", "Google Gemini"),
     ]
 
     user = models.OneToOneField(
@@ -114,6 +131,14 @@ class AISettings(TimestampedModel):
         blank=True
     )
 
+    # Gemini settings
+    gemini_api_key = models.TextField(blank=True)  # Encrypted
+    gemini_model = models.CharField(
+        max_length=50,
+        default="gemini-pro",
+        blank=True
+    )
+
     # Feature toggles
     enable_ai_suggestions = models.BooleanField(default=True)
     enable_ai_categorization = models.BooleanField(default=True)
@@ -137,6 +162,8 @@ class AISettings(TimestampedModel):
             return decrypt_value(self.openai_api_key)
         elif self.preferred_provider == "anthropic" and self.anthropic_api_key:
             return decrypt_value(self.anthropic_api_key)
+        elif self.preferred_provider == "gemini" and self.gemini_api_key:
+            return decrypt_value(self.gemini_api_key)
         return None
 
     def set_api_key(self, provider, api_key):
@@ -148,5 +175,7 @@ class AISettings(TimestampedModel):
             self.openai_api_key = encrypted
         elif provider == "anthropic":
             self.anthropic_api_key = encrypted
+        elif provider == "gemini":
+            self.gemini_api_key = encrypted
 
         self.save(update_fields=[f'{provider}_api_key', 'updated_at'])

@@ -238,3 +238,73 @@ class PendingTransactionSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         # Removed category validation since we're removing the category field
         return attrs
+
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    """Serializer for chat messages."""
+
+    class Meta:
+        model = models.ChatMessage
+        fields = [
+            "id",
+            "user",
+            "conversation_id",
+            "message_type",
+            "content",
+            "metadata",
+            "status",
+            "related_transaction",
+            "related_file",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "user", "created_at", "updated_at"]
+
+    def create(self, validated_data):
+        # Auto-set user from request context
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
+
+
+class StatementPasswordSerializer(serializers.ModelSerializer):
+    """Serializer for statement passwords."""
+
+    password = serializers.CharField(write_only=True, required=False)
+
+    class Meta:
+        model = models.StatementPassword
+        fields = [
+            "id",
+            "user",
+            "account",
+            "password",  # Write-only
+            "password_hint",
+            "is_default",
+            "last_used",
+            "success_count",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = ["id", "user", "last_used", "success_count", "created_at", "updated_at"]
+
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+        validated_data['user'] = self.context['request'].user
+
+        instance = models.StatementPassword(**validated_data)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        if password:
+            instance.set_password(password)
+
+        instance.save()
+        return instance
