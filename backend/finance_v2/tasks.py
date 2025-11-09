@@ -24,6 +24,7 @@ from .services.statement_parser import get_parser
 from .services.ocr_service import get_ocr_service
 from services.ai_unified_parser_service import UnifiedParserService
 
+
 User = get_user_model()
 logger = logging.getLogger(__name__)
 
@@ -522,13 +523,14 @@ from celery.schedules import crontab
 # CHAT MESSAGE PROCESSING TASKS
 # ============================================================================
 
+"""
 @shared_task(name='finance_v2.parse_chat_message_with_ai')
 def parse_chat_message_with_ai(message_id: int):
     """
-    Parse a chat message using AI to extract transaction data.
+        Parse a chat message using AI to extract transaction data.
 
-    Args:
-        message_id: ID of the ChatMessage to parse
+        Args:
+            message_id: ID of the ChatMessage to parse
     """
     from .models import ChatMessage
     from services.llm_provider_service import get_llm_service
@@ -603,18 +605,18 @@ Example: "@john $50 lunch" -> {{"amount": 50, "description": "lunch", "is_expens
         return {"status": "error", "message": str(e)}
 
 
-app.conf.beat_schedule = {
-    'sync-all-emails-hourly': {
-        'task': 'finance_v2.sync_all_users_emails',
-        'schedule': crontab(minute=0),  # Every hour
-    },
-    'process-pending-emails': {
-        'task': 'finance_v2.process_pending_emails',
-        'schedule': crontab(minute='*/10'),  # Every 10 minutes
-    },
-    'deduplication-cleanup-daily': {
-        'task': 'finance_v2.run_deduplication_cleanup',
-        'schedule': crontab(hour=2, minute=0),  # 2 AM daily
-    },
-}
-"""
+# app.conf.beat_schedule = {
+#     'sync-all-emails-hourly': {
+#         'task': 'finance_v2.sync_all_users_emails',
+#         'schedule': crontab(minute=0),  # Every hour
+#     },
+#     'process-pending-emails': {
+#         'task': 'finance_v2.process_pending_emails',
+#         'schedule': crontab(minute='*/10'),  # Every 10 minutes
+#     },
+#     'deduplication-cleanup-daily': {
+#         'task': 'finance_v2.run_deduplication_cleanup',
+#         'schedule': crontab(hour=2, minute=0),  # 2 AM daily
+#     },
+# }
+
