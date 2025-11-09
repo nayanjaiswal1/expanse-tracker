@@ -518,6 +518,91 @@ Add to celery.py or celerybeat_schedule in settings:
 
 from celery.schedules import crontab
 
+# ============================================================================
+# CHAT MESSAGE PROCESSING TASKS
+# ============================================================================
+
+@shared_task(name='finance_v2.parse_chat_message_with_ai')
+def parse_chat_message_with_ai(message_id: int):
+    """
+    Parse a chat message using AI to extract transaction data.
+
+    Args:
+        message_id: ID of the ChatMessage to parse
+    """
+    from .models import ChatMessage
+    from services.llm_provider_service import get_llm_service
+
+    try:
+        message = ChatMessage.objects.get(id=message_id)
+    except ChatMessage.DoesNotExist:
+        logger.error(f"ChatMessage {message_id} not found")
+        return {"status": "error", "message": "Message not found"}
+
+    try:
+        # Get user's AI settings
+        ai_settings = getattr(message.user, 'ai_settings', None)
+        provider = ai_settings.preferred_provider if ai_settings else 'system'
+
+        # Get LLM service
+        llm_service = get_llm_service(provider, message.user)
+
+        # Build prompt
+        prompt = f"""
+Extract transaction details from this message:
+"{message.content}"
+
+Return JSON with:
+- amount (number)
+- description (string)
+- is_expense (boolean)
+- date (YYYY-MM-DD, default to today)
+- category (string, optional)
+- mentions (list of @mentions found)
+- confidence (0-1)
+
+Example: "@john $50 lunch" -> {{"amount": 50, "description": "lunch", "is_expense": true, "mentions": ["@john"], "confidence": 0.95}}
+"""
+
+        # Call AI
+        response = llm_service.generate(prompt)
+
+        # Parse response (assuming JSON)
+        import json
+        try:
+            parsed_data = json.loads(response)
+        except json.JSONDecodeError:
+            # Try to extract JSON from markdown code blocks
+            import re
+            json_match = re.search(r'```json\n(.*?)\n```', response, re.DOTALL)
+            if json_match:
+                parsed_data = json.loads(json_match.group(1))
+            else:
+                parsed_data = {"raw_response": response}
+
+        # Update message
+        message.metadata = message.metadata or {}
+        message.metadata['parsed'] = parsed_data
+        message.metadata['ai_provider'] = provider
+        message.status = 'completed'
+        message.save(update_fields=['metadata', 'status', 'updated_at'])
+
+        logger.info(f"Parsed chat message {message_id} with {provider}")
+        return {
+            "status": "success",
+            "message_id": message_id,
+            "parsed_data": parsed_data
+        }
+
+    except Exception as e:
+        logger.error(f"Failed to parse chat message {message_id}: {e}")
+        message.status = 'failed'
+        message.metadata = message.metadata or {}
+        message.metadata['error'] = str(e)
+        message.save(update_fields=['status', 'metadata', 'updated_at'])
+        return {"status": "error", "message": str(e)}
+
+
 app.conf.beat_schedule = {
     'sync-all-emails-hourly': {
         'task': 'finance_v2.sync_all_users_emails',

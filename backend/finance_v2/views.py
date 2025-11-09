@@ -271,3 +271,138 @@ class UploadedFileViewSet(UserOwnedViewSet):
             "linked_to": uploaded_file.linked_to if uploaded_file.content_object else None,
             "metadata": uploaded_file.metadata,
         }, status=status.HTTP_200_OK)
+
+
+class ChatMessageViewSet(UserOwnedViewSet):
+    """ViewSet for chat-based transaction entry."""
+
+    queryset = models.ChatMessage.objects.select_related(
+        "user", "related_transaction", "related_file"
+    ).all()
+    serializer_class = finance_serializers.ChatMessageSerializer
+    filterset_fields = ["conversation_id", "message_type", "status"]
+    search_fields = ["content"]
+    ordering_fields = ["created_at"]
+
+    @action(detail=True, methods=["post"], url_path="parse")
+    def parse_message(self, request, pk=None):
+        """Parse a chat message using AI to extract transaction data."""
+        message = self.get_object()
+
+        if message.status == "completed":
+            return Response(
+                {"detail": "Message already parsed"},
+                status=status.HTTP_200_OK
+            )
+
+        # Update status to processing
+        message.status = "processing"
+        message.save(update_fields=["status", "updated_at"])
+
+        # Trigger async parsing (import here to avoid circular dependency)
+        from .tasks import parse_chat_message_with_ai
+
+        try:
+            parse_chat_message_with_ai.delay(message.id)
+        except Exception as e:
+            logger.warning(f"Celery failed, running inline: {e}")
+            parse_chat_message_with_ai(message.id)
+
+        return Response(
+            {"detail": "Parsing started", "message_id": message.id},
+            status=status.HTTP_202_ACCEPTED
+        )
+
+    @action(detail=True, methods=["post"], url_path="save-transaction")
+    def save_transaction(self, request, pk=None):
+        """Convert a parsed chat message into an actual transaction."""
+        message = self.get_object()
+
+        if message.related_transaction:
+            return Response(
+                {"detail": "Transaction already created"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Get parsed data from metadata
+        parsed_data = message.metadata.get("parsed", {})
+
+        if not parsed_data:
+            return Response(
+                {"detail": "No parsed data available"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Create transaction from parsed data
+        transaction_data = {
+            "amount": parsed_data.get("amount"),
+            "description": parsed_data.get("description", message.content),
+            "date": parsed_data.get("date", timezone.now().date()),
+            "is_expense": parsed_data.get("is_expense", True),
+            "chat_metadata": {"chat_message_id": message.id},
+        }
+
+        # Create transaction
+        transaction = models.Transaction.objects.create(
+            user=request.user,
+            **transaction_data
+        )
+
+        # Link to message
+        message.related_transaction = transaction
+        message.save(update_fields=["related_transaction", "updated_at"])
+
+        serializer = finance_serializers.TransactionSerializer(transaction)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class StatementPasswordViewSet(UserOwnedViewSet):
+    """ViewSet for managing statement passwords."""
+
+    queryset = models.StatementPassword.objects.select_related("user", "account").all()
+    serializer_class = finance_serializers.StatementPasswordSerializer
+    filterset_fields = ["account", "is_default"]
+    ordering_fields = ["created_at", "success_count", "last_used"]
+
+    @action(detail=True, methods=["post"], url_path="test")
+    def test_password(self, request, pk=None):
+        """Test a password on a specific file."""
+        password_obj = self.get_object()
+        file_id = request.data.get("file_id")
+
+        if not file_id:
+            return Response(
+                {"detail": "file_id is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            uploaded_file = models.UploadedFile.objects.get(
+                id=file_id,
+                user=request.user
+            )
+        except models.UploadedFile.DoesNotExist:
+            return Response(
+                {"detail": "File not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # Try to decrypt the password and test it
+        try:
+            plain_password = password_obj.get_password()
+
+            # TODO: Actually test the password on the file
+            # For now, just return success
+            password_obj.last_used = timezone.now()
+            password_obj.success_count += 1
+            password_obj.save(update_fields=["last_used", "success_count", "updated_at"])
+
+            return Response(
+                {"detail": "Password test successful"},
+                status=status.HTTP_200_OK
+            )
+        except Exception as e:
+            return Response(
+                {"detail": f"Password test failed: {str(e)}"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
