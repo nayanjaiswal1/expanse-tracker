@@ -1,5 +1,11 @@
 /**
  * Utilities for auto-detecting user's location, currency, and timezone
+ *
+ * @deprecated This file contains hardcoded mappings for countries, currencies, and timezones.
+ * Please use the useReferenceData() hook from contexts/ReferenceDataContext.tsx instead
+ * to get mapping data from the backend.
+ *
+ * This file is kept for backward compatibility only.
  */
 
 const GEO_CACHE_KEY = 'finance-tracker:geo-location-cache';

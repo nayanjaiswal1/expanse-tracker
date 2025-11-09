@@ -1,18 +1,19 @@
 import { useTranslation } from 'react-i18next';
 import { Globe } from 'lucide-react';
-
-const languages = [
-  { code: 'en', name: 'English' },
-  { code: 'es', name: 'Español' },
-  { code: 'hi', name: 'हिन्दी' },
-];
+import { useLanguages } from '../../contexts/ReferenceDataContext';
 
 export const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
+  const { languages, isLoading } = useLanguages();
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
   };
+
+  // Show loading state or fallback if data is not ready
+  if (isLoading || languages.length === 0) {
+    return null;
+  }
 
   return (
     <div className="relative">
@@ -25,7 +26,7 @@ export const LanguageSwitcher = () => {
         >
           {languages.map((lang) => (
             <option key={lang.code} value={lang.code}>
-              {lang.name}
+              {lang.native_name}
             </option>
           ))}
         </select>

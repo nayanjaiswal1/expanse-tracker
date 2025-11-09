@@ -21,6 +21,7 @@ urlpatterns = [
     path("api/v2/finance/", include("finance_v2.urls")),
     path("api/integrations/", include("services.urls")),
     path("api/", include("services.ai_urls")),  # Changed from /api/ai/ to /api/ so ai-config/* works
+    path("api/reference/", include("reference.urls")),  # Reference data endpoints
     path("accounts/", include("allauth.urls")),  # Added for django-allauth
 ]
 

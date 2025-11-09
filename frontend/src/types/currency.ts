@@ -1,3 +1,11 @@
+/**
+ * @deprecated This file contains hardcoded currency data.
+ * Please use the useCurrencies() hook from contexts/ReferenceDataContext.tsx instead
+ * to get currency data from the backend.
+ *
+ * This file is kept for backward compatibility only.
+ */
+
 export interface Currency {
   code: string;
   name: string;
@@ -9,6 +17,9 @@ export interface Currency {
   thousandsSeparator?: string;
 }
 
+/**
+ * @deprecated Use useCurrencies() hook from ReferenceDataContext instead
+ */
 export const CURRENCIES: Record<string, Currency> = {
   USD: {
     code: 'USD',

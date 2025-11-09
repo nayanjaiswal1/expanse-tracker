@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "services",
     "users",
     "training.apps.TrainingConfig",
+    "reference",  # Reference data (countries, currencies, languages, timezones)
 ]
 
 SITE_ID = 1  # Added for django-allauth
