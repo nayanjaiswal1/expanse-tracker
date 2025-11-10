@@ -26,6 +26,9 @@ from .assistant import FinanceAssistantConversation, FinanceAssistantMessage
 from .invoice_training import InvoiceParsingAttempt, InvoiceFieldCorrection, InvoiceTrainingDataset
 from .documents import TransactionDocument
 from .currency import Currency
+from .ai_settings import AIProvider, StatementPassword, UserPreferences
+from .statements import Statement, StatementComparison, StatementDuplicate
+from .chat_transactions import ChatMessage, ChatAttachment
 
 # Define __all__ to explicitly list what should be available when importing from finance.models
 __all__ = [
@@ -80,5 +83,16 @@ __all__ = [
     'TransactionDocument',
     # Currency model
     'Currency',
+    # AI Settings models
+    'AIProvider',
+    'StatementPassword',
+    'UserPreferences',
+    # Statement models
+    'Statement',
+    'StatementComparison',
+    'StatementDuplicate',
+    # Chat Transaction models
+    'ChatMessage',
+    'ChatAttachment',
 ]
 
