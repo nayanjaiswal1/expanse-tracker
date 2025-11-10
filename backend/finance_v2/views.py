@@ -313,6 +313,135 @@ class ChatMessageViewSet(UserOwnedViewSet):
             status=status.HTTP_202_ACCEPTED
         )
 
+    @action(detail=False, methods=["post"], url_path="upload-file")
+    def upload_file(self, request):
+        """Upload a file in the chat for processing."""
+        file_obj = request.FILES.get("file")
+        if not file_obj:
+            return Response(
+                {"detail": "No file provided"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        mode = request.data.get("mode", "ai")
+        conversation_id = request.data.get("conversation_id", "quick-add")
+
+        # Create UploadedFile
+        uploaded_file = models.UploadedFile.objects.create(
+            user=request.user,
+            file=file_obj,
+            file_name=file_obj.name,
+            file_type="statement",  # or auto-detect based on extension
+            upload_source="chat",
+            processing_mode=mode if mode == "ai" else "parser",
+        )
+
+        # Create chat message for the upload
+        chat_message = models.ChatMessage.objects.create(
+            user=request.user,
+            conversation_id=conversation_id,
+            message_type="user",
+            content=f"Uploaded file: {file_obj.name}",
+            status="processing",
+            related_file=uploaded_file,
+            metadata={
+                "mode": mode,
+                "input_type": "file",
+                "file_info": {
+                    "filename": file_obj.name,
+                    "file_id": uploaded_file.id,
+                    "mime_type": file_obj.content_type,
+                    "size_bytes": file_obj.size,
+                    "processing_status": "pending"
+                }
+            }
+        )
+
+        # Trigger file processing
+        from .tasks import process_chat_file_upload
+        try:
+            process_chat_file_upload.delay(chat_message.id, uploaded_file.id)
+        except Exception as e:
+            logger.warning(f"Celery failed, running inline: {e}")
+            process_chat_file_upload(chat_message.id, uploaded_file.id)
+
+        serializer = self.get_serializer(chat_message)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    @action(detail=False, methods=["get"], url_path="mention-autocomplete")
+    def mention_autocomplete(self, request):
+        """Get autocomplete suggestions for @ mentions."""
+        query = request.query_params.get("q", "")
+        mention_type = request.query_params.get("type", "user")
+        limit = int(request.query_params.get("limit", 10))
+
+        results = []
+
+        if mention_type == "user":
+            # Search users (you might want to limit this to friends/group members)
+            from django.contrib.auth import get_user_model
+            User = get_user_model()
+
+            users = User.objects.filter(
+                Q(first_name__icontains=query) |
+                Q(last_name__icontains=query) |
+                Q(username__icontains=query)
+            )[:limit]
+
+            results = [
+                {
+                    "type": "user",
+                    "id": user.id,
+                    "text": f"@{user.username}",
+                    "display": f"{user.get_full_name() or user.username}",
+                    "username": user.username,
+                }
+                for user in users
+            ]
+
+        elif mention_type == "group":
+            # Search groups
+            groups = models.Group.objects.filter(
+                Q(created_by=request.user) | Q(members__user=request.user),
+                name__icontains=query,
+                is_active=True
+            ).distinct()[:limit]
+
+            results = [
+                {
+                    "type": "group",
+                    "id": group.id,
+                    "text": f"@{group.name}",
+                    "display": group.name,
+                    "members_count": group.members.count()
+                }
+                for group in groups
+            ]
+
+        elif mention_type == "category":
+            # Search categories (if you have a Category model)
+            # This would need to be imported from finance app
+            try:
+                from finance.models import Category
+                categories = Category.objects.filter(
+                    Q(user=request.user) | Q(user__isnull=True),
+                    name__icontains=query
+                )[:limit]
+
+                results = [
+                    {
+                        "type": "category",
+                        "id": cat.id,
+                        "text": f"#{cat.name}",
+                        "display": cat.name,
+                    }
+                    for cat in categories
+                ]
+            except ImportError:
+                logger.warning("Category model not found")
+
+        return Response(results, status=status.HTTP_200_OK)
+
     @action(detail=True, methods=["post"], url_path="save-transaction")
     def save_transaction(self, request, pk=None):
         """Convert a parsed chat message into an actual transaction."""
@@ -333,13 +462,35 @@ class ChatMessageViewSet(UserOwnedViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # Apply user edits if provided
+        edits = request.data.get("edits", {})
+        for field, value in edits.items():
+            if field in ["amount", "description", "category", "date", "is_expense"]:
+                # Track edit history
+                if "user_edits" not in message.metadata:
+                    message.metadata["user_edits"] = []
+                message.metadata["user_edits"].append({
+                    "field": field,
+                    "original": parsed_data.get(field),
+                    "edited": value,
+                    "timestamp": timezone.now().isoformat()
+                })
+                parsed_data[field] = value
+
         # Create transaction from parsed data
         transaction_data = {
             "amount": parsed_data.get("amount"),
             "description": parsed_data.get("description", message.content),
             "date": parsed_data.get("date", timezone.now().date()),
             "is_expense": parsed_data.get("is_expense", True),
-            "chat_metadata": {"chat_message_id": message.id},
+            "chat_metadata": {
+                "created_via_chat": True,
+                "chat_message_id": message.id,
+                "original_input": message.content,
+                "mode_used": message.metadata.get("mode"),
+                "confidence_score": parsed_data.get("confidence"),
+                "user_confirmed_at": timezone.now().isoformat()
+            },
         }
 
         # Create transaction
@@ -348,9 +499,32 @@ class ChatMessageViewSet(UserOwnedViewSet):
             **transaction_data
         )
 
+        # Handle splits if this is a group transaction
+        mentions = parsed_data.get("mentions", [])
+        split_with = parsed_data.get("split_with", [])
+
+        if split_with and hasattr(models, 'TransactionSplit'):
+            split_method = parsed_data.get("split_method", "equal")
+            total_amount = transaction.amount
+
+            for user_id in split_with:
+                # Calculate split amount based on method
+                if split_method == "equal":
+                    split_amount = total_amount / len(split_with)
+                else:
+                    split_amount = total_amount / len(split_with)  # fallback to equal
+
+                models.TransactionSplit.objects.create(
+                    transaction=transaction,
+                    user_id=user_id,
+                    amount=split_amount,
+                    split_method=split_method
+                )
+
         # Link to message
         message.related_transaction = transaction
-        message.save(update_fields=["related_transaction", "updated_at"])
+        message.metadata.update(parsed_data)  # Save the edited version
+        message.save(update_fields=["related_transaction", "metadata", "updated_at"])
 
         serializer = finance_serializers.TransactionSerializer(transaction)
         return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -605,6 +605,235 @@ Example: "@john $50 lunch" -> {{"amount": 50, "description": "lunch", "is_expens
         return {"status": "error", "message": str(e)}
 
 
+@shared_task(name='finance_v2.parse_shortcut_message')
+def parse_shortcut_message(message_id: int):
+    """
+    Parse shortcut format: @person $amount description
+
+    Args:
+        message_id: ID of the ChatMessage to parse
+    """
+    from .models import ChatMessage
+    from django.contrib.auth import get_user_model
+    import re
+
+    User = get_user_model()
+
+    try:
+        message = ChatMessage.objects.get(id=message_id)
+    except ChatMessage.DoesNotExist:
+        logger.error(f"ChatMessage {message_id} not found")
+        return {"status": "error", "message": "Message not found"}
+
+    try:
+        content = message.content
+
+        # Regex pattern: @username $amount description
+        # Supports: @john $50 lunch, @sarah 30 coffee, @mike $100.50 dinner
+        pattern = r'@(\w+)\s+\$?([\d.,]+)\s+(.*)'
+        match = re.match(pattern, content.strip())
+
+        if not match:
+            # Try alternate format: $amount @username description
+            alt_pattern = r'\$?([\d.,]+)\s+@(\w+)\s+(.*)'
+            alt_match = re.match(alt_pattern, content.strip())
+
+            if alt_match:
+                amount_str, username, description = alt_match.groups()
+            else:
+                raise ValueError("Invalid shortcut format. Use: @person $amount description")
+        else:
+            username, amount_str, description = match.groups()
+
+        # Parse amount
+        amount = float(amount_str.replace(',', ''))
+
+        # Find mentioned user
+        mentioned_user = User.objects.filter(username=username).first()
+
+        if not mentioned_user:
+            # Still parse, but flag as unknown user
+            logger.warning(f"User @{username} not found")
+
+        # Build parsed data
+        parsed_data = {
+            "amount": amount,
+            "currency": message.user.preferences.preferred_currency if hasattr(message.user, 'preferences') else "USD",
+            "description": description.strip(),
+            "date": timezone.now().date().isoformat(),
+            "is_expense": True,
+            "transaction_type": "group" if mentioned_user else "personal",
+            "mentions": [
+                {
+                    "type": "user",
+                    "id": mentioned_user.id if mentioned_user else None,
+                    "text": f"@{username}",
+                    "username": username,
+                    "found": mentioned_user is not None
+                }
+            ],
+            "split_with": [mentioned_user.id] if mentioned_user else [],
+            "split_method": "equal",
+            "confidence": 0.98  # High confidence for explicit format
+        }
+
+        # Update message
+        message.metadata = message.metadata or {}
+        message.metadata['parsed'] = parsed_data
+        message.metadata['parsing_method'] = 'shortcut'
+        message.status = 'completed'
+        message.save(update_fields=['metadata', 'status', 'updated_at'])
+
+        logger.info(f"Parsed shortcut message {message_id}: ${amount} for {username}")
+        return {
+            "status": "success",
+            "message_id": message_id,
+            "parsed_data": parsed_data
+        }
+
+    except ValueError as e:
+        logger.error(f"Invalid shortcut format in message {message_id}: {e}")
+        message.status = 'failed'
+        message.metadata = message.metadata or {}
+        message.metadata['error'] = str(e)
+        message.save(update_fields=['status', 'metadata', 'updated_at'])
+        return {"status": "error", "message": str(e)}
+    except Exception as e:
+        logger.error(f"Failed to parse shortcut message {message_id}: {e}")
+        message.status = 'failed'
+        message.metadata = message.metadata or {}
+        message.metadata['error'] = str(e)
+        message.save(update_fields=['status', 'metadata', 'updated_at'])
+        return {"status": "error", "message": str(e)}
+
+
+@shared_task(name='finance_v2.process_chat_file_upload')
+def process_chat_file_upload(message_id: int, file_id: int):
+    """
+    Process file uploaded in chat (statements, receipts, invoices).
+
+    Args:
+        message_id: ID of the ChatMessage
+        file_id: ID of the UploadedFile
+    """
+    from .models import ChatMessage, UploadedFile
+
+    try:
+        message = ChatMessage.objects.get(id=message_id)
+        uploaded_file = UploadedFile.objects.get(id=file_id)
+    except (ChatMessage.DoesNotExist, UploadedFile.DoesNotExist) as e:
+        logger.error(f"Chat message or file not found: {e}")
+        return {"status": "error", "message": str(e)}
+
+    try:
+        # Update status
+        message.metadata = message.metadata or {}
+        message.metadata['file_info'] = message.metadata.get('file_info', {})
+        message.metadata['file_info']['processing_status'] = 'processing'
+        message.save(update_fields=['metadata', 'updated_at'])
+
+        # Determine file type and processing method
+        file_ext = uploaded_file.file_name.lower().split('.')[-1] if uploaded_file.file_name else ''
+
+        if file_ext in ['pdf', 'csv']:
+            # Bank statement - process with existing task
+            # This will create multiple pending transactions
+            result = process_uploaded_file(file_id)
+
+            if result.get('error'):
+                raise ValueError(result['error'])
+
+            transactions_count = result.get('created', 0)
+
+            parsed_data = {
+                "file_type": "statement",
+                "transactions_found": transactions_count,
+                "processing_mode": uploaded_file.processing_mode,
+                "confidence": 0.85
+            }
+
+        elif file_ext in ['jpg', 'jpeg', 'png', 'gif']:
+            # Receipt/Invoice - OCR processing
+            from .services.ocr_service import get_ocr_service
+
+            ocr_service = get_ocr_service()
+            ocr_result = ocr_service.extract_structured_data(
+                file_path=uploaded_file.file.path,
+                document_type='receipt'
+            )
+
+            if not ocr_result.get('success'):
+                raise ValueError(ocr_result.get('error', 'OCR processing failed'))
+
+            # Extract transaction data from OCR result
+            ocr_data = ocr_result.get('structured_data', {})
+
+            parsed_data = {
+                "file_type": "receipt",
+                "amount": ocr_data.get('total'),
+                "description": ocr_data.get('merchant', 'Receipt'),
+                "date": ocr_data.get('date', timezone.now().date().isoformat()),
+                "items": ocr_data.get('line_items', []),
+                "confidence": ocr_result.get('confidence', 0.75)
+            }
+
+        else:
+            raise ValueError(f"Unsupported file type: {file_ext}")
+
+        # Update message with parsed data
+        message.metadata['parsed'] = parsed_data
+        message.metadata['file_info']['processing_status'] = 'completed'
+        message.status = 'completed'
+        message.save(update_fields=['metadata', 'status', 'updated_at'])
+
+        # Create a system response message
+        response_content = f"File processed: "
+        if parsed_data['file_type'] == 'statement':
+            response_content += f"Found {parsed_data['transactions_found']} transaction(s)"
+        else:
+            response_content += f"${parsed_data.get('amount', 0)} - {parsed_data.get('description', 'N/A')}"
+
+        ChatMessage.objects.create(
+            user=message.user,
+            conversation_id=message.conversation_id,
+            message_type='suggestion',
+            content=response_content,
+            metadata={'file_parsed_data': parsed_data},
+            status='completed'
+        )
+
+        logger.info(f"Processed chat file upload {file_id} for message {message_id}")
+        return {
+            "status": "success",
+            "message_id": message_id,
+            "file_id": file_id,
+            "parsed_data": parsed_data
+        }
+
+    except Exception as e:
+        logger.error(f"Failed to process chat file {file_id}: {e}")
+        message.metadata['file_info']['processing_status'] = 'failed'
+        message.metadata['error'] = str(e)
+        message.status = 'failed'
+        message.save(update_fields=['metadata', 'status', 'updated_at'])
+        return {"status": "error", "message": str(e)}
+
+
+app.conf.beat_schedule = {
+    'sync-all-emails-hourly': {
+        'task': 'finance_v2.sync_all_users_emails',
+        'schedule': crontab(minute=0),  # Every hour
+    },
+    'process-pending-emails': {
+        'task': 'finance_v2.process_pending_emails',
+        'schedule': crontab(minute='*/10'),  # Every 10 minutes
+    },
+    'deduplication-cleanup-daily': {
+        'task': 'finance_v2.run_deduplication_cleanup',
+        'schedule': crontab(hour=2, minute=0),  # 2 AM daily
+    },
+}
+"""
 # app.conf.beat_schedule = {
 #     'sync-all-emails-hourly': {
 #         'task': 'finance_v2.sync_all_users_emails',

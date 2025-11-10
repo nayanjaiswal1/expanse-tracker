@@ -23,6 +23,7 @@ import { createTransactionGroupsApi } from './modules/transactionGroups';
 import { createUploadsApi } from './modules/uploads';
 import { createUsersApi } from './modules/users';
 import { createAiApi } from './modules/ai';
+import { createQuickAddApi } from './modules/quickAdd';
 import type {
   Currency,
   CurrencyConversionResponse,
@@ -48,6 +49,7 @@ const apiClient = {
   ...createContactsApi(http),
   ...createExpenseGroupsApi(http),
   ...createSubscriptionsApi(http),
+  ...createQuickAddApi(http),
   ...createProcessingRulesApi(http),
   ...createGmailApi(http),
   ...createEmailTemplatesApi(http),

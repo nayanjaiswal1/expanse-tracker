@@ -16,7 +16,7 @@ import AdminPage from './pages/AdminPage';
 
 // Protected pages
 import { Dashboard } from './features/dashboard/Dashboard';
-import { ConfigurableTransactionTable } from './features/finance/ConfigurableTransactionTable';
+import { TransactionsPage } from './features/finance/TransactionsPage';
 import { AccountsManagement } from './features/finance/AccountsManagement';
 import { Goals } from './features/finance/Goals';
 import { GoalDetailPage } from './features/finance/GoalDetailPage';
