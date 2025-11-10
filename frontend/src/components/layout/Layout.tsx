@@ -21,6 +21,8 @@ import {
   Wallet,
   CheckCircle,
   Code2,
+  MessageSquare,
+  Lock,
 } from 'lucide-react';
 import { CreditDisplay } from '../common/CreditDisplay';
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
@@ -43,6 +45,7 @@ export const Layout = () => {
 
   const navigation = [
     { path: '/dashboard', name: 'Dashboard', icon: Grid3X3 },
+    { path: '/chat', name: 'Chat', icon: MessageSquare },
     { path: '/transactions', name: 'Operations', icon: FolderOpen },
     { path: '/accounts', name: 'Accounts & Statements', icon: CreditCard },
     { path: '/goals', name: 'Goals', icon: Target },
@@ -55,6 +58,7 @@ export const Layout = () => {
     { path: '/settings/profile', name: 'Profile & Appearance', icon: User },
     { path: '/settings/preferences', name: 'Preferences', icon: Globe },
     { path: '/settings/ai-settings', name: 'AI Configuration', icon: Brain },
+    { path: '/settings/passwords', name: 'Statement Passwords', icon: Lock },
     { path: '/settings/subscriptions', name: 'Subscriptions', icon: RefreshCw },
     { path: '/settings/automation', name: 'Automation', icon: SettingsIcon },
     { path: '/settings/integrations', name: 'Integrations', icon: Mail },
