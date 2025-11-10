@@ -16,7 +16,7 @@ import AdminPage from './pages/AdminPage';
 
 // Protected pages
 import { Dashboard } from './features/dashboard/Dashboard';
-import { ConfigurableTransactionTable } from './features/finance/ConfigurableTransactionTable';
+import { TransactionsPage } from './features/finance/TransactionsPage';
 import { AccountsManagement } from './features/finance/AccountsManagement';
 import { Goals } from './features/finance/Goals';
 import { GoalDetailPage } from './features/finance/GoalDetailPage';
@@ -69,7 +69,7 @@ const router = createBrowserRouter([
             element: <Layout />,
             children: [
               { path: 'dashboard', element: withErrorBoundary(Dashboard) },
-              { path: 'transactions', element: withErrorBoundary(ConfigurableTransactionTable) },
+              { path: 'transactions', element: withErrorBoundary(TransactionsPage) },
               { path: 'accounts', element: withErrorBoundary(AccountsManagement) },
               { path: 'subscriptions', element: <Navigate to="/settings" replace /> },
               { path: 'goals', element: withErrorBoundary(Goals) },
